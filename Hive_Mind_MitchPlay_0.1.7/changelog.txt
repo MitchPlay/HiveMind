@@ -1,0 +1,29 @@
+Version: 0.1.7
+Date: 2022-05-18
+  Major features:
+    - Added MitchPlayHiveMindClasses mod as a Dependency; It adds Classes to The Engineer Team
+---------------------------------------------------------------------------------------------------
+Version: 0.1.6
+Date: 2022-05-30
+  Major features:
+    - Minor Changes to the cost and production of various buildings; Mainliy Pollution Production
+	--Pollution Burner Miner Drill: Old Cost 175 --> 200 New Cost
+	-- Pollution Mining Drill: Old Cost 350 --> 415 New Cost
+	-- Advanced Pollution Mining Drill: Old Cost 1120 --> 1425 New Cost
+	-- Pollution oil drill: Old Cost 875 --> 1150 New Cost
+	-- Advanced Pollution oil drill: Old Cost 2625 --> 3150 New Cost 
+	-- Creep Wall: Old Cost 75 -- Old Hp:25 --> New Cost:115 -- New Hp:45
+	-- Armoured Creep Tumor: Old Hp:125 --> New Hp:165
+
+---------------------------------------------------------------------------------------------------
+Version: 0.1.5
+Date: 2022-05-18
+  Major features:
+    - Reworked the Early-Mid Game production of Pollution; Builders should get a little longer to prepare their defenses
+    - Added ArmouredBiters as a Dependency (Has Great Compatibility to the mod, Turn off Armored Biter Nests)
+    - Fixed Some Capitalization of Some Spelling
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 2022-05-02
+  Major features:
+    - Initial release
