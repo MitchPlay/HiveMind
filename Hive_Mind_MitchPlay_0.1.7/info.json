@@ -6,6 +6,6 @@
   "contact": "",
   "homepage": "",
   "description": "Original Hive Mind mod created by Klonan, Re-made by Mitchplay. \n\nTake control of the Biters, defend your home planet from the foreign invaders, The Engineers! Build Spawners and influence a pollution based economy, and lead yourself to Victory! \n\n2 versions of the MitchPlay's Ramake are available, Default & Mayhem\n\n--This download version: Default--\n\n(Default = Max Alien population is 1000 -This version is recommended)\n\n(Mayhem = Max Alien population is 2500 -This version may be unstable and Laggy)\n\n--MitchPlay Discord: https://discord.gg/rhPXFdJmE9\n\nThank you again Klonan for allowing me to remake this mod!",
-  "dependencies": ["base >= 1.1.46", "MitchPlayHiveMindClasses >=0.1.0", "Unit_Control >= 0.3.0", "ArmouredBiters >=1.1.5"],
+  "dependencies": ["base >= 1.1.46", "MitchPlayHiveMindClasses >=0.1.0", "Unit_Control >= 0.3.0"],
   "factorio_version": "1.1"
 } 

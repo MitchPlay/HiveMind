@@ -1,3 +1,10 @@
+Version: 0.1.8
+Date: 2022-xx-xx
+  Major features:
+    - Removed armored biters as a required dependency
+    - The hivemind now has a working population cap
+    - The hivemind now has a working tech tree
+---------------------------------------------------------------------------------------------------
 Version: 0.1.7
 Date: 2022-05-18
   Major features:

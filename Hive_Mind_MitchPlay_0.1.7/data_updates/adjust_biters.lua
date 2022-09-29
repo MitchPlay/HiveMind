@@ -4,13 +4,18 @@ local util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
 
 local default_unlocked = shared.default_unlocked
 
+local dependency_list = {}
+local pollution_values = {}
+local dependency_list_worms = {}
+local pollution_values_worms = {}
+
 local make_biter_item = function(prototype, subgroup)
   local item =
   {
     type = "item",
     name = prototype.name,
     localised_name = prototype.localised_name,
-    localised_description = {"requires-pollution", prototype.pollution_to_join_attack * shared.pollution_cost_multiplier},
+    localised_description = {"requires-pollution-unit", prototype.pollution_to_join_attack * shared.pollution_cost_multiplier, prototype.unit_size},
     icon = prototype.icon,
     icon_size = prototype.icon_size,
     stack_size = 1,
@@ -36,6 +41,51 @@ local make_biter_recipe = function(prototype, category)
   data:extend{recipe}
 end
 
+local prerequisites_finder = function(prototype)
+  local pollution_index
+  local string = {}
+  for y, x in pairs(pollution_values) do
+    if x == prototype.pollution_to_join_attack then
+      pollution_index = y
+      break
+    end
+  end
+  if pollution_index ~= 1 and pollution_index ~= nil then
+    for _, name in pairs(dependency_list[pollution_values[pollution_index-1]]) do
+      if not default_unlocked[name] then
+        table.insert(string, "hivemind-unlock-"..name)
+      end
+    end
+  end
+  local pollution_index
+  for y, x in pairs(pollution_values_worms) do
+    if x == shared.required_pollution[prototype.name] then
+      pollution_index = y
+      break
+    end
+  end
+  if pollution_index ~= 1 and pollution_index ~= nil then
+    for _, name in pairs(dependency_list_worms[pollution_values_worms[pollution_index-1]]) do
+      if not default_unlocked[name] then
+        table.insert(string, "hivemind-unlock-"..name)
+      end
+    end
+    local name = prototype.name
+    if name:find("worm") then
+      name = name:gsub("%-worm%-turret","")
+      local biter = "hivemind-unlock-"..name.."-biter"
+      local spitter = "hivemind-unlock-"..name.."-spitter"
+      if data.raw.technology[biter] then
+        table.insert(string,biter)
+      elseif data.raw.technology[spitter] then
+        table.insert(string,spitter)      
+      end
+    end
+  end
+  return string
+end
+
+
 local make_unlock_technology = function(prototype, cost)
   if default_unlocked[prototype.name] then return end
   local tech =
@@ -60,7 +110,7 @@ local make_unlock_technology = function(prototype, cost)
       ingredients = {{names.pollution_proxy, 1}},
       time = 1
     },
-    prerequisites = {},
+    prerequisites = prerequisites_finder(prototype),
     order = prototype.type..prototype.order..prototype.name
   }
   data:extend({tech})
@@ -116,9 +166,12 @@ local make_worm_item = function(prototype)
   data:extend{item}
 end
 
+local biter_ammo_category = util.ammo_category("biter-melee")
+
 local make_biter = function(biter)
   biter.collision_mask = util.ground_unit_collision_mask()
   biter.radar_range = biter.radar_range or 2
+  biter.unit_size = math.ceil(biter.pollution_to_join_attack / shared.unit_size_divider)
   make_biter_item(biter, names.deployers.biter_deployer)
   make_biter_recipe(biter, names.deployers.biter_deployer)
   make_unlock_technology(biter, biter.pollution_to_join_attack * shared.pollution_cost_multiplier * 200)
@@ -126,14 +179,20 @@ local make_biter = function(biter)
   biter.ai_settings.destroy_when_commands_fail = false
   biter.friendly_map_color = {b = 1, g = 1}
   biter.affected_by_tiles = biter.affected_by_tiles or true
-  biter.localised_description = {"requires-pollution", biter.pollution_to_join_attack * shared.pollution_cost_multiplier}
+  biter.localised_description = {"requires-pollution-unit", biter.pollution_to_join_attack * shared.pollution_cost_multiplier, biter.unit_size}
   --biter.corpse = nil
   biter.dying_explosion = nil
+  if biter.attack_parameters.ammo_type.category == "melee" then
+    biter.attack_parameters.ammo_type.category = biter_ammo_category
+  end
 end
+
+local spitter_ammo_category = util.ammo_category("spitter-biological")
 
 local make_spitter = function(biter)
   biter.collision_mask = util.ground_unit_collision_mask()
   biter.radar_range = biter.radar_range or 2
+  biter.unit_size = math.ceil(biter.pollution_to_join_attack / shared.unit_size_divider)
   make_biter_item(biter, names.deployers.spitter_deployer)
   make_biter_recipe(biter, names.deployers.spitter_deployer)
   make_unlock_technology(biter, biter.pollution_to_join_attack * shared.pollution_cost_multiplier * 200)
@@ -141,9 +200,12 @@ local make_spitter = function(biter)
   biter.ai_settings.destroy_when_commands_fail = false
   biter.friendly_map_color = {b = 1, g = 1}
   biter.affected_by_tiles = biter.affected_by_tiles or true
-  biter.localised_description = {"requires-pollution", biter.pollution_to_join_attack * shared.pollution_cost_multiplier}
+  biter.localised_description = {"requires-pollution-unit", biter.pollution_to_join_attack * shared.pollution_cost_multiplier, biter.unit_size}
   --biter.corpse = nil
   biter.dying_explosion = nil
+  if biter.attack_parameters.ammo_type.category == "biological" then
+    biter.attack_parameters.ammo_type.category = spitter_ammo_category
+  end
 end
 
 local worm_ammo_category = util.ammo_category("worm-biological")
@@ -166,8 +228,20 @@ end
 
 
 local units = data.raw.unit
-
 for name, unit in pairs (units) do
+  if unit.name:find("biter") or unit.name:find("spitter") then
+    if dependency_list[unit.pollution_to_join_attack] then
+      table.insert(dependency_list[unit.pollution_to_join_attack],unit.name)
+    else
+      dependency_list[unit.pollution_to_join_attack] = {unit.name}
+      table.insert(pollution_values, unit.pollution_to_join_attack)
+    end
+  end
+end
+table.sort(pollution_values)
+
+
+for name, unit in pairs(units) do
   if unit.name:find("biter") then
     make_biter(unit)
   elseif unit.name:find("spitter") then
@@ -184,6 +258,18 @@ for k, fire in pairs (data.raw.fire) do
 end
 
 local turrets = data.raw.turret
+
+for name, turret in pairs (turrets) do
+  if turret.name:find("worm%-turret") and shared.required_pollution[name] then
+    if dependency_list_worms[shared.required_pollution[name]] then
+      table.insert(dependency_list_worms[shared.required_pollution[name]],turret.name)
+    else
+      dependency_list_worms[shared.required_pollution[name]] = {turret.name}
+      table.insert(pollution_values_worms, shared.required_pollution[name])
+    end
+  end
+end
+table.sort(pollution_values_worms)
 
 --Overall, they just have too large a range.
 

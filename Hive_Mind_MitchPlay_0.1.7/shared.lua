@@ -56,7 +56,25 @@ data.required_pollution =
   ["small-worm-turret"] = 200,
   ["medium-worm-turret"] = 400,
   ["big-worm-turret"] = 800,
-  ["behemoth-worm-turret"] = 1600
+  ["behemoth-worm-turret"] = 1600,
+  ["bob-big-explosive-worm-turret"] = 1000,
+  ["bob-big-fire-worm-turret"] = 1000,
+  ["bob-big-poison-worm-turret"] = 1000,
+  ["bob-big-piercing-worm-turret"] = 1000,
+  ["bob-big-electric-worm-turret"] = 1000,
+  ["bob-giant-worm-turret"] = 1600,
+  ["small-cold-worm-turret"] = 200,
+  ["medium-cold-worm-turret"] = 400,
+  ["big-cold-worm-turret"] = 800,
+  ["behemoth-cold-worm-turret"] = 1600,
+  ["leviathan-cold-worm-turret"] = 2500,
+  ["mother-cold-worm-turret"] = 4000,
+  ["small-explosive-worm-turret"] = 200,
+  ["medium-explosive-worm-turret"] = 400,
+  ["big-explosive-worm-turret"] = 800,
+  ["behemoth-explosive-worm-turret"] = 1600,
+  ["leviathan-explosive-worm-turret"] = 2500,
+  ["mother-explosive-worm-turret"] = 4000
 }
 
 -- Pollution Burner Miner Drill - 175 cost - 6 pollution 
@@ -79,12 +97,53 @@ data.default_unlocked =
   ["small-worm-turret"] = true
 }
 
+data.needs_tech =
+{
+  [data.creep_tumor] = {},
+  [data.armored_creep_tumor] = {"hivemind-unlock-creep-tumor"},
+  [data.creep_spreader] = {"hivemind-unlock-creep-tumor"},
+  [data.creep_wall] = {},
+  [data.creep_chest] = {},
+  [data.pollution_mining_drill] = {},
+  [data.advanced_pollution_mining_drill] = {"hivemind-unlock-pollution-mining-drill"},
+  [data.pollution_oil_drill] = {},
+  [data.advanced_pollution_oil_drill] = {"hivemind-unlock-pollution-oil-drill","hivemind-unlock-advanced-pollution-mining-drill"},
+}
+
+data.needs_oponent_tech =
+{
+  --hivemind = {
+  --  ["hivemind-unlock-"..data.creep_wall] = {"stone-wall"},
+  --  ["hivemind-unlock-"..data.pollution_oil_drill] = {"oil-processing"},
+  --  ["hivemind-unlock-"..data.advanced_pollution_oil_drill] = {"advanced-oil-processing"},
+  --  ["hivemind-unlock-"..data.advanced_pollution_mining_drill] = {"mining-productivity-1"}
+  --}
+}
+
 data.needs_creep =
 {
   ["small-worm-turret"] =true,
   ["medium-worm-turret"] = true,
   ["big-worm-turret"] = true,
   ["behemoth-worm-turret"] = true,
+  ["bob-big-explosive-worm-turret"] = true,
+  ["bob-big-fire-worm-turret"] = true,
+  ["bob-big-poison-worm-turret"] = true,
+  ["bob-big-piercing-worm-turret"] = true,
+  ["bob-big-electric-worm-turret"] = true,
+  ["bob-giant-worm-turret"] = true,
+  ["small-cold-worm-turret"] = true,
+  ["medium-cold-worm-turret"] = true,
+  ["big-cold-worm-turret"] = true,
+  ["behemoth-cold-worm-turret"] = true,
+  ["leviathan-cold-worm-turret"] = true,
+  ["mother-cold-worm-turret"] = true,
+  ["small-explosive-worm-turret"] = true,
+  ["medium-explosive-worm-turret"] = true,
+  ["big-explosive-worm-turret"] = true,
+  ["behemoth-explosive-worm-turret"] = true,
+  ["leviathan-explosive-worm-turret"] = true,
+  ["mother-explosive-worm-turret"] = true,
   [data.creep_tumor] = true,
   [data.creep_wall] = true,
   [data.armored_creep_tumor] = true,
