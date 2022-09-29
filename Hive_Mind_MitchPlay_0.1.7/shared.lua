@@ -5,7 +5,11 @@ local data = {}
 data.deployers =
 {
   biter_deployer = "biter-deployer",
-  spitter_deployer = "spitter-deployer"
+  spitter_deployer = "spitter-deployer",
+  cb_cold_deployer = "cb-cold-deployer",
+  explosive_biter_deployer = "explosive_biter_deployer",
+  bob_biter_deployer = "bob-biter-deployer",
+  bob_spitter_deployer = "bob-spitter-deployer"
 }
 
 data.players =
@@ -94,6 +98,8 @@ data.needs_proxy_type =
 data.default_unlocked =
 {
   ["small-biter"] = true,
+  ["small-cold-biter"] = true,
+  ["small-explosive-biter"] = true,
   ["small-spitter"] = true,
   ["small-worm-turret"] = true
 }

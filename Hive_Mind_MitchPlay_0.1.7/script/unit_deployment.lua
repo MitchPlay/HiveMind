@@ -665,7 +665,7 @@ end
 unit_deployment.on_configuration_changed = function()
   check_update_map_settings()
   check_update_pop_cap()
-  rendering.clear("Hive_Mind_Testing")
+  rendering.clear("Hive_Mind_MitchPlay")
   redistribute_on_tick_checks()
   migrate_proxies()
   data.max_pop_count = data.max_pop_count or 20

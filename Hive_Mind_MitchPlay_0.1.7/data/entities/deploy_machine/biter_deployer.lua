@@ -44,6 +44,8 @@ machine.close_sound =
   {filename = "__base__/sound/creatures/worm-folding-3.ogg"},
 }
 
+machine.minable = nil
+
 machine.always_draw_idle_animation = true
 machine.animation =
 {
@@ -70,7 +72,8 @@ machine.energy_source = {type = "void"}
 machine.create_ghost_on_death = false
 machine.friendly_map_color = {g = 1}
 
-local item = {
+local item =
+{
   type = "item",
   name = name,
   localised_name = {name},
@@ -84,7 +87,8 @@ local item = {
   stack_size = 50
 }
 
-local category = {
+local category =
+{
   type = "recipe-category",
   name = name
 }

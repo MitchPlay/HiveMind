@@ -77,8 +77,8 @@ local reset_hivemind_force
 reset_hivemind_force = function(player)
 
   if player == "all" then
-    for force, name in pairs(game.forces) do
-      if is_hivemind_force(force) then reset_hivemind_force(name) end
+    for _, force in pairs(game.forces) do
+      if is_hivemind_force(force) then reset_hivemind_force(force.name) end
     end
   end
 
@@ -99,9 +99,9 @@ reset_hivemind_force = function(player)
   be_friends(force, enemy_force)
 
   --hivemind friends
-  for force_x, _ in pairs game.forces do
-    if is_hivemind_force(force_x) and force_x ~= force then
-      be_friends(force, force_x)
+  for _, forces in pairs(game.forces) do
+    if is_hivemind_force(forces) and forces ~= force then
+      be_friends(force, forces)
     end
   end
 
