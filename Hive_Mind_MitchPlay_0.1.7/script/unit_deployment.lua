@@ -451,7 +451,7 @@ local spawner_ghost_built = function(entity, player_index)
     return
   end
 
-  if needs_creep[ghost_name] and entity.surface.get_tile(entity.position).name ~= creep_name then
+  if util.needs_creep(ghost_name) and entity.surface.get_tile(entity.position).name ~= creep_name then
     if player_index then
       local player = game.get_player(player_index)
       player.create_local_flying_text

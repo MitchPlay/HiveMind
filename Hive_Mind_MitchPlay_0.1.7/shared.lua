@@ -62,24 +62,6 @@ data.required_pollution =
   ["medium-worm-turret"] = 400,
   ["big-worm-turret"] = 800,
   ["behemoth-worm-turret"] = 1600,
-  ["bob-big-explosive-worm-turret"] = 1000,
-  ["bob-big-fire-worm-turret"] = 1000,
-  ["bob-big-poison-worm-turret"] = 1000,
-  ["bob-big-piercing-worm-turret"] = 1000,
-  ["bob-big-electric-worm-turret"] = 1000,
-  ["bob-giant-worm-turret"] = 1600,
-  ["small-cold-worm-turret"] = 200,
-  ["medium-cold-worm-turret"] = 400,
-  ["big-cold-worm-turret"] = 800,
-  ["behemoth-cold-worm-turret"] = 1600,
-  ["leviathan-cold-worm-turret"] = 2500,
-  ["mother-cold-worm-turret"] = 4000,
-  ["small-explosive-worm-turret"] = 200,
-  ["medium-explosive-worm-turret"] = 400,
-  ["big-explosive-worm-turret"] = 800,
-  ["behemoth-explosive-worm-turret"] = 1600,
-  ["leviathan-explosive-worm-turret"] = 2500,
-  ["mother-explosive-worm-turret"] = 4000
 }
 
 -- Pollution Burner Miner Drill - 175 cost - 6 pollution 
@@ -98,8 +80,6 @@ data.needs_proxy_type =
 data.default_unlocked =
 {
   ["small-biter"] = true,
-  ["small-cold-biter"] = true,
-  ["small-explosive-biter"] = true,
   ["small-spitter"] = true,
   ["small-worm-turret"] = true
 }
@@ -133,24 +113,6 @@ data.needs_creep =
   ["medium-worm-turret"] = true,
   ["big-worm-turret"] = true,
   ["behemoth-worm-turret"] = true,
-  ["bob-big-explosive-worm-turret"] = true,
-  ["bob-big-fire-worm-turret"] = true,
-  ["bob-big-poison-worm-turret"] = true,
-  ["bob-big-piercing-worm-turret"] = true,
-  ["bob-big-electric-worm-turret"] = true,
-  ["bob-giant-worm-turret"] = true,
-  ["small-cold-worm-turret"] = true,
-  ["medium-cold-worm-turret"] = true,
-  ["big-cold-worm-turret"] = true,
-  ["behemoth-cold-worm-turret"] = true,
-  ["leviathan-cold-worm-turret"] = true,
-  ["mother-cold-worm-turret"] = true,
-  ["small-explosive-worm-turret"] = true,
-  ["medium-explosive-worm-turret"] = true,
-  ["big-explosive-worm-turret"] = true,
-  ["behemoth-explosive-worm-turret"] = true,
-  ["leviathan-explosive-worm-turret"] = true,
-  ["mother-explosive-worm-turret"] = true,
   [data.creep_tumor] = true,
   [data.creep_wall] = true,
   [data.armored_creep_tumor] = true,
@@ -164,5 +126,12 @@ data.needs_creep =
 
 data.pollution_cost_multiplier = 1
 data.deployer_speed_modifier = 0.25
+
+data.evolution_factor_to_pollution_cost = --pollution_cost = base + round(multiplier *((round(evolution_factor,1)*10)^(power_effect * evolution_factor)),0) * 25
+{
+  base = -300,       --this helps the starter values to be balanced
+  multiplier = 19.8, --this helps give teh numbers a good spread
+  power_effect = 1   --higher numbers give a bigger gap between the earliest and the highest
+}
 
 return data
