@@ -1,9 +1,11 @@
-Version: 0.1.8
+Version: 0.2.0
 Date: 2022-xx-xx
   Major features:
-    - Removed armored biters as a required dependency
-    - The hivemind now has a working population cap
-    - The hivemind now has a working tech tree
+    - Removed Armored Biters as a Required Dependency
+    - All Worms have been Buffed Slightly to account for the new Tech Tree
+    - The Hivemind now has a Working Population Cap
+    - The Hivemind now has a Working Tech Tree
+    	-- Tech Tree had been Divived into "Ages" Sub-Categories of Tech Tree Unlocks
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.7
 Date: 2022-05-18
