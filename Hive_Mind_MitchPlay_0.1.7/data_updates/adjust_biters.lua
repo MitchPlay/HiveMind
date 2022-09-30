@@ -277,12 +277,12 @@ range_worm_medium   = 30
 range_worm_big      = 38
 range_worm_behemoth = 48
 ]]
---Laser turret is 24, flamethrower is 30, so lets make behemoth 40 and scale the rest accordingly
+--Laser turret is 24, flamethrower is 30, so lets make behemoth 55 and scale the rest accordingly
 
-turrets["small-worm-turret"].attack_parameters.range = 25
-turrets["medium-worm-turret"].attack_parameters.range = 30
-turrets["big-worm-turret"].attack_parameters.range = 35
-turrets["behemoth-worm-turret"].attack_parameters.range = 40
+turrets["small-worm-turret"].attack_parameters.range = 30
+turrets["medium-worm-turret"].attack_parameters.range = 35
+turrets["big-worm-turret"].attack_parameters.range = 45
+turrets["behemoth-worm-turret"].attack_parameters.range = 55
 
 --Also the damage is ridiculous:
 --[[damage_modifier_worm_small    = 36
@@ -290,12 +290,12 @@ damage_modifier_worm_medium   = 48
 damage_modifier_worm_big      = 72
 damage_modifier_worm_behemoth = 96]]
 
---lets say behemoth is 60
+--lets say behemoth is 70
 
-turrets["small-worm-turret"].attack_parameters.damage_modifier = 15
-turrets["medium-worm-turret"].attack_parameters.damage_modifier = 30
-turrets["big-worm-turret"].attack_parameters.damage_modifier = 45
-turrets["behemoth-worm-turret"].attack_parameters.damage_modifier = 60
+turrets["small-worm-turret"].attack_parameters.damage_modifier = 20
+turrets["medium-worm-turret"].attack_parameters.damage_modifier = 40
+turrets["big-worm-turret"].attack_parameters.damage_modifier = 55
+turrets["behemoth-worm-turret"].attack_parameters.damage_modifier = 70
 --error(serpent.block(turrets["behemoth-worm-turret"].attack_parameters))
 
 
