@@ -111,8 +111,13 @@ util.teleport_unit_away = function(unit, area)
   unit.teleport(non_collide)
 end
 
+util.radian_distance_to_x_y = function(radian, distance)
+  return {math.sin(radian) * distance, math.cos(radian) * distance}
+end
+
 local ft_util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
 util.needs_creep = ft_util.needs_creep
 util.required_pollution = ft_util.required_pollution
+util.evo_factor_to_pollution_cost = ft_util.evo_factor_to_pollution_cost
 
 return util

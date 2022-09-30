@@ -126,12 +126,51 @@ data.needs_creep =
 
 data.pollution_cost_multiplier = 1
 data.deployer_speed_modifier = 0.25
+data.base_starting_distance = 500 --this means that at 100% starting area biters spawn at around this number
 
 data.evolution_factor_to_pollution_cost = --pollution_cost = base + round(multiplier *((round(evolution_factor,1)*10)^(power_effect * evolution_factor)),0) * 25
 {
   base = -300,       --this helps the starter values to be balanced
   multiplier = 19.8, --this helps give teh numbers a good spread
   power_effect = 1   --higher numbers give a bigger gap between the earliest and the highest
+}
+
+data.summon_starter_data = {
+  [data.players.small_biter_player] = {
+    ["units"] = {
+      ["small-biter"] = 17,
+      ["small-spitter"] = 8,
+      --["small-builder"] = 10
+    },
+    ["default_biters_and_worm_unlocked_factor"] = 0
+  },
+  [data.players.medium_biter_player] = {
+    ["units"] = {
+      ["small-biter"] = 12,
+      ["small-spitter"] = 6,
+      ["medium-biter"] = 4,
+      ["medium-spitter"] = 3
+    },
+    ["default_biters_and_worm_unlocked_factor"] = 0,2
+  },
+  [data.players.big_biter_player] = {
+    ["units"] = {
+      ["medium-biter"] = 17,
+      ["medium-spitter"] = 10,
+      ["big-biter"] = 8,
+      ["big-spitter"] = 3
+    },
+    ["default_biters_and_worm_unlocked_factor"] = 0,4
+  },
+  [data.players.behemoth_biter_player] = {
+    ["units"] = {
+      ["big-biter"] = 14,
+      ["big-spitter"] = 5,
+      ["behemoth-biter"] = 2,
+      ["behemoth-spitter"] = 2
+    },
+    ["default_biters_and_worm_unlocked_factor"] = 0,6
+  }
 }
 
 return data

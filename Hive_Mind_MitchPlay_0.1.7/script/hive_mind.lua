@@ -124,10 +124,10 @@ create_hivemind_force = function(player)
   return force
 end
 
-local deploy_map =
+local deploy_map = 
 {
   ["biter-spawner"] = names.deployers.biter_deployer,
-  ["spitter-spawner"] = names.deployers.spitter_deployer,
+  ["spitter-spawner"] = names.deployers.spitter_deployer
 }
 
 local light_color = {r = 1, b = 0, g = 0.6}
@@ -145,7 +145,7 @@ local add_biter_light = function(player)
     target = player.character,
     surface = player.surface,
     forces = {player.force},
-    minimum_darkness = 0
+    minimum_darkness = 0,
   }
 end
 
@@ -169,6 +169,10 @@ local characters =
   [names.players.small_biter_player] = 0
 }
 
+local random_spawn_location = function(player)
+  return util.radian_distance_to_x_y(math.random()*6.28, (math.random()*0.2+0.9)*names.base_starting_distance*player.surface.map_gen_settings.starting_area)
+end
+
 local create_character = function(player)
 
   local force = player.force
@@ -187,7 +191,7 @@ local create_character = function(player)
   if closest then
     position = surface.find_non_colliding_position(name, closest.position, 64, 1)
   else
-    position = surface.find_non_colliding_position(name, origin, 64, 1)
+    position = surface.find_non_colliding_position(name, random_spawn_location(player), 64, 1)
   end
   if not position then return end
   player.character = surface.create_entity
@@ -198,6 +202,31 @@ local create_character = function(player)
   }
   reset_gun_inventory(player)
   add_biter_light(player)
+
+end
+
+local summon_starter_pack = function(player)
+
+  local starter_package = names.summon_starter_data[player.character.name]
+  if not starter_package then return end
+
+  local surface = player.surface
+  local position = player.position
+  local force = player.force
+
+  for name, count in pairs(starter_package.units) do
+   for x=1, count do 
+    local spawn_spot = surface.find_non_colliding_position(name, position, 64, 1)
+    surface.create_entity
+    {
+      name = name,
+      position = spawn_spot,
+      force = force
+    }
+   end
+  end
+
+  --the stuff for bonus tech
 
 end
 
@@ -314,8 +343,13 @@ local biter_quickbar
 local biter_quickbar = function()
   if biter_quickbar then return biter_quickbar end
   biter_quickbar = {}
+  for name, deployer in pairs(game.item_prototypes) do
+    if deployer.subgroup.name == "hivemind-deployer" then
+      table.insert(biter_quickbar, name)
+    end
+  end
   for name, pollution in pairs (names.required_pollution) do
-    if game.item_prototypes[name] then
+    if game.item_prototypes[name] and game.item_prototypes[name].subgroup.name ~= "hivemind-deployer" then
       table.insert(biter_quickbar, name)
     end
   end
@@ -363,11 +397,11 @@ join_hive = function(player)
     end
   end
 
-  local spawner = get_root_spawner(surface, position)
-  if not spawner then
-    player.print({"cant-find-spawner"})
-    return
-  end
+  --local spawner = get_root_spawner(surface, position)
+  --if not spawner then
+  --  player.print({"cant-find-spawner"})
+  --  return
+  --end
   if player.surface ~= surface then
     player.character = nil
     player.teleport(position, surface)
@@ -398,9 +432,10 @@ join_hive = function(player)
   script_data.previous_life_data[player.index] = previous_life_data
   player.character = nil
   player.force = force
-  convert_nest(player, spawner)
+  --convert_nest(player, spawner)
   --player.game_view_settings.show_controller_gui = false
   create_character(player)
+  summon_starter_pack(player)
   player.color = {r = 255, g = 100, b = 100}
   player.chat_color = {r = 255, g = 100, b = 100}
   player.tag = "[color=255,100,100]HIVE[/color]"

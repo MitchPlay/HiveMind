@@ -54,7 +54,7 @@ local prerequisites_finder = function(prototype)
   end
   if pollution_index ~= 1 and pollution_index ~= nil then
     for _, name in pairs(dependency_list[pollution_values[pollution_index-1]]) do
-      if not default_unlocked[name] then
+      if not util.is_default_unlocked(name) then
         table.insert(string, "hivemind-unlock-"..name)
       end
     end
@@ -89,7 +89,7 @@ end
 
 
 local make_unlock_technology = function(prototype, cost)
-  if default_unlocked[prototype.name] then return end
+  if util.is_default_unlocked(prototype.name) then return end
   local tech =
   {
     type = "technology",

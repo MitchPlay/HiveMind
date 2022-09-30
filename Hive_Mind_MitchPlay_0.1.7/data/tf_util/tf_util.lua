@@ -386,14 +386,17 @@ util.deployer_name = function(name)
   return deployer_name
 end
 
+util.evo_factor_to_pollution_cost = function(evo_factor)
+  return shared.evolution_factor_to_pollution_cost.base + math.floor(0.5+shared.evolution_factor_to_pollution_cost.multiplier *((math.floor(0.5+evolution_factor*10))^(shared.evolution_factor_to_pollution_cost.power_effect * evolution_factor))) * 25
+end
+
 util.required_pollution = function(name, entity)
   pollution_cost = shared.required_pollution[name]
   if pollution_cost then return pollution_cost end
 
   evolution_factor = entity.build_base_evolution_requirement
   if not evolution_factor then evolution_factor = 0 end
-  pollution_cost = shared.evolution_factor_to_pollution_cost.base + math.floor(0.5+shared.evolution_factor_to_pollution_cost.multiplier *((math.floor(0.5+evolution_factor*10))^(shared.evolution_factor_to_pollution_cost.power_effect * evolution_factor))) * 25
-  return pollution_cost
+  return util.evo_factor_to_pollution_cost(evolution_factor)
 end
 
 util.needs_creep = function(name)
@@ -402,4 +405,55 @@ util.needs_creep = function(name)
   return false
 end
 
+util.get_filtered_type_from_list = function(type_filter, prototype_list)
+  local return_list = {}
+  for name, prototype in pairs(prototype_list) do
+    if prototype.type == type_filter then
+      table.insert(return_list, prototype)
+    end
+  end
+  return return_list
+end
+
+local is_default_unlocked
+util.is_default_unlocked = function()
+  if is_default_unlocked then return is_default_unlocked end
+  local spawners = data.raw["unit-spawner"]
+  if spawners == nil then spawners = util.get_filtered_type_from_list("unit-spawner", data.entity_prototypes) end
+  is_default_unlocked = shared.default_unlocked
+  for name, spawner in pairs(spawners) do
+    for unit_index, unit in pairs(spawners[name].result_units) do
+      if unit[2][1][1] == 0.0 then
+        table.insert(is_default_unlocked, {name = true})
+      end
+    end
+  end
+  return is_default_unlocked
+end
+
+local spawner_order
+util.get_spawner_order = function()
+  if spawner_order then return spawner_order end
+  spawner_order = {}
+  local different_pollution_values = {}
+  local timely_table = {}
+  local spawners = data.raw["unit-spawner"]
+  if spawners == nil then spawners = util.get_filtered_type_from_list("unit-spawner", data.entity_prototypes) end
+  for spawner, name in pairs(spawners) do
+    local pollution_cost = util.required_pollution(name, spawner)
+    if timely_table[pollution_cost] then
+      table.insert(timely_table[pollution_cost], name)
+    else
+      timely_table[pollution_cost] = {name}
+      table.insert(different_pollution_values, pollution_cost)
+    end
+  end
+  table.sort(different_pollution_values)
+  for index, value in pairs(different_pollution_values) do
+    for index, spawner_name in pairs(timely_table[value]) do
+      table.insert(spawner_order, name)
+    end
+  end
+  return spawner_order
+end
 return util
