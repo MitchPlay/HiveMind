@@ -5,7 +5,11 @@ local data = {}
 data.deployers =
 {
   biter_deployer = "biter-deployer",
-  spitter_deployer = "spitter-deployer"
+  spitter_deployer = "spitter-deployer",
+  cb_cold_deployer = "cb-cold-deployer",
+  explosive_biter_deployer = "explosive_biter_deployer",
+  bob_biter_deployer = "bob-biter-deployer",
+  bob_spitter_deployer = "bob-spitter-deployer"
 }
 
 data.players =
@@ -37,6 +41,7 @@ data.advanced_pollution_mining_drill = "advanced-pollution-mining-drill"
 data.pollution_oil_drill = "pollution-oil-drill"
 data.advanced_pollution_oil_drill = "advanced-pollution-oil-drill"
 data.sticker_proxy = "sticker-proxy"
+data.unit_size_divider = 6 -- [pollution to attack] / [this number] rounded up is the space a single biter unit takes.
 
 data.required_pollution =
 {
@@ -56,7 +61,7 @@ data.required_pollution =
   ["small-worm-turret"] = 200,
   ["medium-worm-turret"] = 400,
   ["big-worm-turret"] = 800,
-  ["behemoth-worm-turret"] = 1600
+  ["behemoth-worm-turret"] = 1600,
 }
 
 -- Pollution Burner Miner Drill - 175 cost - 6 pollution 
@@ -79,6 +84,29 @@ data.default_unlocked =
   ["small-worm-turret"] = true
 }
 
+data.needs_tech =
+{
+  [data.creep_tumor] = {},
+  [data.armored_creep_tumor] = {"hivemind-unlock-creep-tumor"},
+  [data.creep_spreader] = {"hivemind-unlock-creep-tumor"},
+  [data.creep_wall] = {},
+  [data.creep_chest] = {},
+  [data.pollution_mining_drill] = {},
+  [data.advanced_pollution_mining_drill] = {"hivemind-unlock-pollution-mining-drill"},
+  [data.pollution_oil_drill] = {},
+  [data.advanced_pollution_oil_drill] = {"hivemind-unlock-pollution-oil-drill","hivemind-unlock-advanced-pollution-mining-drill"},
+}
+
+data.needs_oponent_tech =
+{
+  --hivemind = {
+  --  ["hivemind-unlock-"..data.creep_wall] = {"stone-wall"},
+  --  ["hivemind-unlock-"..data.pollution_oil_drill] = {"oil-processing"},
+  --  ["hivemind-unlock-"..data.advanced_pollution_oil_drill] = {"advanced-oil-processing"},
+  --  ["hivemind-unlock-"..data.advanced_pollution_mining_drill] = {"mining-productivity-1"}
+  --}
+}
+
 data.needs_creep =
 {
   ["small-worm-turret"] =true,
@@ -98,5 +126,12 @@ data.needs_creep =
 
 data.pollution_cost_multiplier = 1
 data.deployer_speed_modifier = 0.25
+
+data.evolution_factor_to_pollution_cost = --pollution_cost = base + round(multiplier *((round(evolution_factor,1)*10)^(power_effect * evolution_factor)),0) * 25
+{
+  base = -300,       --this helps the starter values to be balanced
+  multiplier = 19.8, --this helps give teh numbers a good spread
+  power_effect = 1   --higher numbers give a bigger gap between the earliest and the highest
+}
 
 return data

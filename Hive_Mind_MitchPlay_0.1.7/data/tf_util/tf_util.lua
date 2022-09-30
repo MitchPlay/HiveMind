@@ -1,4 +1,5 @@
 local util = require("util")
+local shared = require("shared")
 
 local is_sprite_def = function(array)
   return array.width and array.height and (array.filename or array.stripes or array.filenames)
@@ -377,6 +378,28 @@ util.area = function(position, radius)
   local x = position[1] or position.x
   local y = position[2] or position.y
   return {{x - radius, y - radius}, {x + radius, y + radius}}
+end
+
+util.deployer_name = function(name)
+  local deployer_name = name:gsub("spawner","deployer")
+  if deployer_name == name then return name.."-deployer" end
+  return deployer_name
+end
+
+util.required_pollution = function(name, entity)
+  pollution_cost = shared.required_pollution[name]
+  if pollution_cost then return pollution_cost end
+
+  evolution_factor = entity.build_base_evolution_requirement
+  if not evolution_factor then evolution_factor = 0 end
+  pollution_cost = shared.evolution_factor_to_pollution_cost.base + math.floor(0.5+shared.evolution_factor_to_pollution_cost.multiplier *((math.floor(0.5+evolution_factor*10))^(shared.evolution_factor_to_pollution_cost.power_effect * evolution_factor))) * 25
+  return pollution_cost
+end
+
+util.needs_creep = function(name)
+  if shared.needs_creep[name] then return true end
+  if name:find("worm%-turret") then return true end
+  return false
 end
 
 return util

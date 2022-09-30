@@ -28,8 +28,67 @@ local is_hivemind_technology = function(technology)
   return false
 end
 
-local reset_hivemind_force = function()
-  local force = game.forces.hivemind
+local is_hivemind_unlocked = function(force, tech)
+  if not names.needs_oponent_tech[force.name] then return true end
+  if not names.needs_oponent_tech[force.name][tech.name] then return true end
+  for x, _ in pairs(game.forces) do
+    local check_all_techs = 0
+    for _, y in pairs(names.needs_oponent_tech[force.name][tech.name]) do
+      if game.forces[x].technologies[y].researched == true then
+        check_all_techs = check_all_techs + 1
+      end
+    end
+    if #names.needs_oponent_tech[force.name][tech.name] == check_all_techs then return true end
+  end
+  return false
+end
+
+local is_hivemind_force = function(force)
+  if (force.name:find("hivemind")) then return true end
+  return false
+end
+
+local reset_hivemind_technology = function(force, hivemind_only)
+  if not hivemind_only then hivemind_only = false end
+  local is_hivemind = is_hivemind_force(force)
+  if hivemind_only == false then
+    for _, tech in pairs(force.technologies) do
+      tech.enabled = (is_hivemind == is_hivemind_technology(tech)) and is_hivemind_unlocked(force, tech)
+      tech.visible_when_disabled = (is_hivemind == is_hivemind_technology(tech))
+    end
+  else
+    for _, tech in pairs(force.technologies) do
+      if is_hivemind_unlocked(force, tech) == false or is_hivemind_technology(tech) == true then
+        tech.enabled = (is_hivemind == is_hivemind_technology(tech)) and is_hivemind_unlocked(force, tech)
+        tech.visible_when_disabled = (is_hivemind == is_hivemind_technology(tech))
+      end
+    end
+  end
+end
+
+local create_hivemind_force
+
+local get_hivemind_force = function(player)
+  if player.force == "hivemind" then return game.forces.hivemind end
+  return game.forces["hivemind-"..player.index] or create_hivemind_force(player)
+end
+
+local reset_hivemind_force
+reset_hivemind_force = function(player)
+
+  if player == "all" then
+    for _, force in pairs(game.forces) do
+      if is_hivemind_force(force) then reset_hivemind_force(force.name) end
+    end
+  end
+
+  local force
+  if type(player) == "string" then 
+    force = game.forces[player]
+  else
+    force = get_hivemind_force(player)
+  end
+  
   if not force then return end
   force.reset()
 
@@ -39,13 +98,18 @@ local reset_hivemind_force = function()
   enemy_force.share_chart = true
   be_friends(force, enemy_force)
 
+  --hivemind friends
+  for _, forces in pairs(game.forces) do
+    if is_hivemind_force(forces) and forces ~= force then
+      be_friends(force, forces)
+    end
+  end
+
   if game.forces.spectator then
     be_friends(force, game.forces.spectator)
   end
 
-  for k, tech in pairs (force.technologies) do
-    tech.enabled = is_hivemind_technology(tech)
-  end
+  reset_hivemind_technology(force)
 
   force.evolution_factor = enemy_force.evolution_factor
   for k, recipe in pairs (force.recipes) do
@@ -54,20 +118,10 @@ local reset_hivemind_force = function()
 
 end
 
-
-local create_hivemind_force = function()
-
-  local force = game.create_force("hivemind")
-  reset_hivemind_force()
+create_hivemind_force = function(player)
+  local force = game.create_force("hivemind-"..player.index)
+  reset_hivemind_force(player)
   return force
-end
-
-local get_hivemind_force = function()
-  return game.forces.hivemind or create_hivemind_force()
-end
-
-local is_hivemind_force = function(force)
-  return force.name == "hivemind"
 end
 
 local deploy_map =
@@ -238,6 +292,7 @@ local actions =
   [join_hive_button.name] = function(event) join_hive(game.get_player(event.player_index)) end,
   [leave_hive_button.name] = function(event) leave_hive(game.get_player(event.player_index)) end,
 }
+
 local gui_init = function(player)
   local gui = mod_gui.get_button_flow(player)
 
@@ -255,15 +310,22 @@ local gui_init = function(player)
   gui.add(element)
 end
 
-
-local biter_quickbar ={}
-for name, pollution in pairs (names.required_pollution) do
-  table.insert(biter_quickbar, name)
+local biter_quickbar
+local biter_quickbar = function()
+  if biter_quickbar then return biter_quickbar end
+  biter_quickbar = {}
+  for name, pollution in pairs (names.required_pollution) do
+    if game.item_prototypes[name] then
+      table.insert(biter_quickbar, name)
+    end
+  end
+  return biter_quickbar
 end
+
 
 join_hive = function(player)
 
-  local force = get_hivemind_force()
+  local force = get_hivemind_force(player)
   if script_data.force_balance then
     local max = 1
     local name
@@ -313,6 +375,7 @@ join_hive = function(player)
   local get_quick_bar_slot = player.get_quick_bar_slot
   local set_quick_bar_slot = player.set_quick_bar_slot
   local quickbar = {}
+  local biter_quickbar = biter_quickbar()
   for k = 1, 100 do
     local item = get_quick_bar_slot(k)
     if item then quickbar[k] = item.name end
@@ -345,9 +408,10 @@ join_hive = function(player)
   game.print{"joined-hive", player.name}
 end
 
-local check_hivemind_disband = function()
+local check_hivemind_disband = function(force)
 
-  local force = get_hivemind_force()
+  if not is_hivemind_force(force) then return end
+
   if #force.players > 0 then
     --still players on this force, so its alright.
     return
@@ -436,7 +500,7 @@ leave_hive = function(player)
   player.tag = previous_life_data.tag or ""
 
   game.print{"left-hive", player.name}
-  check_hivemind_disband()
+  check_hivemind_disband(player.force)
 
 end
 
@@ -532,9 +596,9 @@ end
 
 local on_player_changed_force = function(event)
   local old_force = event.force
-  check_hivemind_disband()
 
   local player = game.get_player(event.player_index)
+  check_hivemind_disband(old_force)
   gui_init(player)
 end
 
@@ -653,12 +717,12 @@ local events =
 }
 
 local on_wave_defense_round_started = function(event)
-  reset_hivemind_force()
+  reset_hivemind_force("all")
   set_map_settings()
 end
 
 local on_pvp_round_start = function(event)
-  reset_hivemind_force()
+  reset_hivemind_force("all")
 end
 
 local register_wave_defense = function()
@@ -685,7 +749,6 @@ lib.on_init = function()
   set_map_settings()
   register_wave_defense()
   register_pvp()
-  get_hivemind_force()
 end
 
 lib.on_load = function()
@@ -704,6 +767,9 @@ lib.on_configuration_changed = function()
   end
   script_data.player_spawns = script_data.player_spawns or {}
   set_map_settings()
+  for _, force in pairs(game.forces) do
+    reset_hivemind_technology(force,true)
+  end
 end
 
 return lib

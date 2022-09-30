@@ -111,4 +111,8 @@ util.teleport_unit_away = function(unit, area)
   unit.teleport(non_collide)
 end
 
+local ft_util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
+util.needs_creep = ft_util.needs_creep
+util.required_pollution = ft_util.required_pollution
+
 return util

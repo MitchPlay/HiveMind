@@ -9,7 +9,7 @@ local data =
   enemy_attack_pollution_consumption_modifier = 1,
   can_spawn = false,
   pop_count = {},
-  max_pop_count = 1000
+  max_pop_count = 20
 }
 
 local unit_spawned_event
@@ -26,16 +26,101 @@ local get_max_pop_count = function()
   return data.max_pop_count
 end
 
-local can_spawn_units = function(force_index)
-  return data.pop_count[force_index] < get_max_pop_count()
-end
-
 local names = names.deployers
 local units = names.units
 --todo allow other mods to add deployers
 local spawner_map = {}
 for k, deployer in pairs (names) do
   spawner_map[deployer] = true
+end
+
+
+--Max pollution each spawner can absorb is 10% of whatever the chunk has.
+local pollution_percent_to_take = 0.1
+
+local min_to_take = 1
+
+local prototype_cache = {}
+
+local get_prototype = function(name)
+  local prototype = prototype_cache[name]
+  if prototype then return prototype end
+  prototype = game.entity_prototypes[name]
+  prototype_cache[name] = prototype
+  return prototype
+end
+
+local required_pollution = shared.required_pollution
+local pollution_cost_multiplier = shared.pollution_cost_multiplier
+
+local get_required_pollution = function(name)
+  return required_pollution[name] * pollution_cost_multiplier
+end
+
+local unit_list
+
+local get_units = function()
+  if unit_list then return unit_list end
+  unit_list = {}
+  for name, prototype in pairs (game.entity_prototypes) do
+    if prototype.type == "unit" then
+      table.insert(unit_list, name)
+    end
+  end
+  return unit_list
+end
+
+local unit_sizes
+
+local get_unit_sizes = function(name)
+  if unit_sizes then return unit_sizes[name] end
+  unit_sizes = {}
+  for name, x in pairs(get_units()) do
+    unit_sizes[x] = math.ceil(game.entity_prototypes[x].pollution_to_join_attack / shared.unit_size_divider)
+  end
+  return unit_sizes[name]
+end
+
+local get_unit_size = function(name)
+  return get_unit_sizes(name)
+end
+
+local can_spawn_units = function(force_index, name)
+  return (data.pop_count[force_index] + get_unit_sizes(name) <= get_max_pop_count())
+end
+
+local update_force_popcap_labels = function(force, caption)
+  for k, player in pairs (force.players) do
+    local gui = player.gui.left
+    local label = gui.unit_deployment_pop_cap_label
+    if not label then
+      label = gui.add{name = "unit_deployment_pop_cap_label", type = "label"}
+    end
+    label.caption = caption
+    label.visible = (caption ~= "")
+  end
+end
+
+local update_pop_cap = function()
+  --local profiler = game.create_profiler()
+  local list = get_units()
+  local forces = game.forces
+  local forces_to_update = {}
+  data.pop_count = {}
+  for name, force in pairs (forces) do
+    local total = 0
+    local get_entity_count = force.get_entity_count
+    for k = 1, #list do
+      total = total + get_entity_count(list[k]) * get_unit_sizes(list[k])
+    end
+    local index = force.index
+    local current = data.pop_count[index]
+    data.pop_count[index] = total
+    local caption = total > 0 and {"popcap", total.."/"..get_max_pop_count()} or ""
+    update_force_popcap_labels(force, caption)
+  end
+
+  --game.print({"", game.tick, profiler})
 end
 
 local direction_enum =
@@ -67,33 +152,13 @@ local deploy_unit = function(source, prototype)
   if unit and unit.valid then
     on_flow(name, 1)
     local index = force.index
-    data.pop_count[index] = data.pop_count[index] + 1
+    data.pop_count[index] = data.pop_count[index] + get_unit_sizes(name)
     script.raise_event(unit_spawned_event, {entity = unit, spawner = source})
+    local caption = data.pop_count[index] > 0 and {"popcap", data.pop_count[index].."/"..get_max_pop_count()} or ""
+    update_force_popcap_labels(force, caption)
   end
 end
 
-
---Max pollution each spawner can absorb is 10% of whatever the chunk has.
-local pollution_percent_to_take = 0.1
-
-local min_to_take = 1
-
-local prototype_cache = {}
-
-local get_prototype = function(name)
-  local prototype = prototype_cache[name]
-  if prototype then return prototype end
-  prototype = game.entity_prototypes[name]
-  prototype_cache[name] = prototype
-  return prototype
-end
-
-local required_pollution = shared.required_pollution
-local pollution_cost_multiplier = shared.pollution_cost_multiplier
-
-local get_required_pollution = function(name)
-  return required_pollution[name] * pollution_cost_multiplier
-end
 
 local min = math.min
 
@@ -117,11 +182,12 @@ local check_spawner = function(spawner_data)
   end
 
   local force = entity.force
+  local force_index = force.index
+  local recipe_name = recipe.name
 
-  local can_spawn = can_spawn_units(force.index)
+  local can_spawn = can_spawn_units(force_index, recipe_name)
   entity.active = can_spawn
-  if can_spawn then
-    local recipe_name = recipe.name
+  if can_spawn == true then
     local item_count = entity.get_item_count(recipe_name)
     if item_count > 0 then
       deploy_unit(entity, get_prototype(recipe_name))
@@ -385,7 +451,7 @@ local spawner_ghost_built = function(entity, player_index)
     return
   end
 
-  if needs_creep[ghost_name] and entity.surface.get_tile(entity.position).name ~= creep_name then
+  if util.needs_creep(ghost_name) and entity.surface.get_tile(entity.position).name ~= creep_name then
     if player_index then
       local player = game.get_player(player_index)
       player.create_local_flying_text
@@ -473,53 +539,11 @@ local check_update_map_settings = function(tick)
   data.enemy_attack_pollution_consumption_modifier = game.map_settings.pollution.enemy_attack_pollution_consumption_modifier
 end
 
-local unit_list
-
-local get_units = function()
-  if unit_list then return unit_list end
-  unit_list = {}
-  for name, prototype in pairs (game.entity_prototypes) do
-    if prototype.type == "unit" then
-      table.insert(unit_list, name)
-    end
-  end
-  return unit_list
-end
-
-local update_force_popcap_labels = function(force, caption)
-  for k, player in pairs (force.players) do
-    local gui = player.gui.left
-    local label = gui.unit_deployment_pop_cap_label
-    if not label then
-      label = gui.add{name = "unit_deployment_pop_cap_label", type = "label"}
-    end
-    label.caption = caption
-    label.visible = (caption ~= "")
-  end
-end
-
 local check_update_pop_cap = function(tick)
   if tick and tick % 60 ~= 0 then return end
-  --local profiler = game.create_profiler()
-  local list = get_units()
-  local forces = game.forces
-  local forces_to_update = {}
-  data.pop_count = {}
-  for name, force in pairs (forces) do
-    local total = 0
-    local get_entity_count = force.get_entity_count
-    for k = 1, #list do
-      total = total + get_entity_count(list[k])
-    end
-    local index = force.index
-    local current = data.pop_count[index]
-    data.pop_count[index] = total
-    local caption = total > 0 and {"popcap", total.."/"..get_max_pop_count()} or ""
-    update_force_popcap_labels(force, caption)
-  end
-
-  --game.print({"", game.tick, profiler})
+  update_pop_cap()
 end
+
 
 local on_tick = function(event)
   check_spawners_on_tick(event.tick)
@@ -571,6 +595,31 @@ local migrate_proxies = function()
   data.proxies = nil
 end
 
+local on_research_finished = function(event)
+
+  -- do the pop cap thingy
+  if event.research.name:find("popcap") then
+    data.max_pop_count =  get_max_pop_count() + 10
+  -- data.max_pop_count = event.research.level * 10 + 20
+  end
+
+  for force in pairs(shared.needs_oponent_tech) do
+    log(force)
+    for tech in pairs(shared.needs_oponent_tech[force]) do
+      local check_all_techs = 0
+      for _, y in pairs(shared.needs_oponent_tech[force][tech]) do
+        if game.forces[event.research.force.name].technologies[y].researched == true then
+          check_all_techs = check_all_techs + 1
+        end
+      end
+      if #shared.needs_oponent_tech[force][tech] == check_all_techs then
+        game.forces[force].technologies[tech].enabled = true
+        game.print({"stealing.stole",{"stealing."..force},{"stealing."..event.research.force.name}})
+      end
+    end
+  end
+end
+
 local events =
 {
   [defines.events.on_built_entity] = on_built_entity,
@@ -578,14 +627,18 @@ local events =
   [defines.events.script_raised_revive] = on_built_entity,
   [defines.events.script_raised_built] = on_built_entity,
   [defines.events.on_tick] = on_tick,
-  [defines.events.on_ai_command_completed] = on_ai_command_completed
+  [defines.events.on_ai_command_completed] = on_ai_command_completed,
+
+  [defines.events.on_research_finished] = on_research_finished
 }
 
 commands.add_command("popcap", "Set the popcap for hive mind biters", function(command)
   local player = game.get_player(command.player_index)
   if not player.admin then player.print("Setting popcap is only for admins") return end
+  if command.parameter == nil then player.print("popcap: "..get_max_pop_count()) return end
   if not tonumber(command.parameter) then player.print("Popcap must be a number") return end
   data.max_pop_count = tonumber(command.parameter)
+  player.print("popcap: "..get_max_pop_count())
 end)
 
 local setup_spawn_event = function()
@@ -615,7 +668,7 @@ unit_deployment.on_configuration_changed = function()
   rendering.clear("Hive_Mind_MitchPlay")
   redistribute_on_tick_checks()
   migrate_proxies()
-  data.max_pop_count = data.max_pop_count or 1000
+  data.max_pop_count = data.max_pop_count or 20
 end
 
 return unit_deployment

@@ -1,17 +1,40 @@
 local require = function(name) return require("data/entities/"..name) end
 
 require("biter_player")
-require("deploy_machine/deploy_machine")
+--require("deploy_machine/deploy_machine")
 require("pollution_proxy")
-require("creep_tumor")
-require("armored_creep_tumor")
-require("creep_wall")
-require("creep_chest")
-require("creep_spreader")
 require("creep_landmine")
-require("pollution_lab")
-require("pollution_burner_mining_drill")
-require("pollution_mining_drill")
-require("advanced_pollution_mining_drill")
-require("pollution_oil_drill")
-require("advanced_pollution_oil_drill")
+
+local entity_catagory =
+{
+  type = "recipe-category",
+  name = "hivemind-entities-category"
+}
+
+data:extend{entity_catagory}
+
+local make_recipe = function(name)
+    local recipe = 
+    {
+      type = "recipe",
+      name = name,
+      localised_name = {name},
+      enabled = false,
+      ingredients = {},
+      energy_required = math.huge,
+      result = name,
+      category = entity_catagory.name
+    }
+    data:extend{recipe}
+end
+
+
+for name, _ in pairs(names.required_pollution) do
+  if not name:find("worm%-turret") then
+      if not(name == "biter-deployer") and not(name == "spitter-deployer") then
+          local file = name:gsub("-","_")
+          require(file)
+      end
+      make_recipe(name)
+  end
+end
