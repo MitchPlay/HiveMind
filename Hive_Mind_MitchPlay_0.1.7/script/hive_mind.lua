@@ -237,7 +237,6 @@ local summon_starter_pack = function(player)
   if player.character.name == "behemoth-biter-player" then term = game.forces.enemy.evolution_factor end
 
   local pollution_free = term * 3.5 * util.evo_factor_to_pollution_cost(starter_package.default_biters_and_worm_unlocked_factor * game.forces.enemy.evolution_factor)
-  log("it did the starter pack tech thing.  "..pollution_free.."   "..starter_package.default_biters_and_worm_unlocked_factor * game.forces.enemy.evolution_factor)
   for name, technology in pairs(force.technologies) do
     local is_in_needs_tech = names.needs_tech[string.gsub(name,"hivemind%-unlock%-","")]
     if name:find("hivemind") and not is_in_needs_tech then

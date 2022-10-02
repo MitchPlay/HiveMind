@@ -610,7 +610,6 @@ local on_research_finished = function(event)
   end
 
   for force in pairs(shared.needs_oponent_tech) do
-    log(force)
     for tech in pairs(shared.needs_oponent_tech[force]) do
       local check_all_techs = 0
       for _, y in pairs(shared.needs_oponent_tech[force][tech]) do

@@ -76,7 +76,7 @@ data.needs_proxy_type =
 data.default_unlocked =
 {
   ["small-biter"] = true,
-  ["small-spitter"] = true,
+  --["small-spitter"] = true,
   ["small-worm-turret"] = true
 }
 

@@ -14,7 +14,7 @@ local make_deployer = function(origin, name)
     end
 
     machine.name = name
-    machine.localised_name = {name}
+    machine.localised_name = {name or graphics.localised_name}
     machine.localised_description = {"requires-pollution", util.required_pollution(name, graphics) * shared.pollution_cost_multiplier}
     machine.icon = graphics.icon
     machine.icon_size = graphics.icon_size
@@ -32,6 +32,7 @@ local make_deployer = function(origin, name)
     machine.corpse = graphics.corpse
     --machine.dying_explosion = graphics.dying_explosion
     machine.collision_mask = {"water-tile", "player-layer", "train-layer"}
+    machine.order = graphics.order
 
     machine.open_sound =
     {
@@ -94,22 +95,20 @@ local make_deployer = function(origin, name)
       type = "recipe-category",
       name = name
     }
-    --[[
 
-      local recipe = {
-        type = "recipe",
-        name = name,
-        localised_name = name,
-        enabled = true,
-        ingredients =
-        {
-          {names.items.biological_structure, 120},
-        },
-        energy_required = 100,
-        result = name
-      }
 
-      ]]
+    local recipe = {
+      type = "recipe",
+      name = name,
+      localised_name = {name},
+      enabled = false,
+      ingredients = {},
+      energy_required = math.huge,
+      result = name,
+      catagory = name
+    }
+
+      
 
     local subgroup =
     {
@@ -125,7 +124,7 @@ local make_deployer = function(origin, name)
       machine,
       item,
       catagory,
-      --recipe
+      recipe,
       subgroup
     }
 end

@@ -418,21 +418,24 @@ end
 local is_default_unlocked
 util.is_default_unlocked = function(name)
   if is_default_unlocked then return is_default_unlocked[name] end
-  local spawners = game
   is_default_unlocked = shared.default_unlocked
-  if not spawners then
-    spawners = data.raw["unit-spawner"]
-    for name, spawner in pairs(spawners) do
-      for unit_index, unit in pairs(spawners[name].result_units) do
+  local spawners = util.get_spawner_order()
+  if not game then
+    local no_dupes_pls = {}
+    for index, name in pairs(spawners) do
+      for unit_index, unit in pairs(data.raw["unit-spawner"][name].result_units) do
         if unit[2][1][1] == 0.0 then
           is_default_unlocked[unit[1]] = true
+          if not no_dupes_pls[unit[1]] then
+            no_dupes_pls[unit[1]] = true
+            is_default_unlocked[util.deployer_name(name)] = true
+          end
         end
       end
     end
   else
-    spawners = util.get_filtered_type_from_list("unit-spawner", spawners.entity_prototypes)
-    for name, spawner in pairs(spawners) do
-      for unit_index, unit in pairs(spawners[name].result_units) do
+    for index, name in pairs(spawners) do
+      for unit_index, unit in pairs(game.entity_prototypes[name].result_units) do
         if unit.spawn_points[1].evolution_factor == 0.0 then
           is_default_unlocked[unit.unit] = true
         end
