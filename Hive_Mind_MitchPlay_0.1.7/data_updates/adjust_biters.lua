@@ -216,7 +216,7 @@ local units = data.raw.unit
 for name, unit in pairs(units) do
   if unit.name:find("biter") or unit.name:find("spitter") then
     if dependency_list[unit.pollution_to_join_attack] then
-      table.insert(dependency_list[unit.pollution_to_join_attack],unit.name)
+      table.insert(dependency_list[unit.pollution_to_join_attack], unit.name)
     else
       dependency_list[unit.pollution_to_join_attack] = {unit.name}
       table.insert(pollution_values, unit.pollution_to_join_attack)
@@ -225,16 +225,8 @@ for name, unit in pairs(units) do
 end
 table.sort(pollution_values)
 
-local spawners = data.raw["unit-spawner"]
-local spawner_list = {"biter-spawner","spitter-spawner"}
-for name, spawner in pairs(spawners) do
-  if name ~= "biter-spawner" or name ~= "spitter-spawner" then
-    table.insert(spawner_list, name)
-  end
-end
-
-for index, name in pairs(spawner_list) do
-  for unit_name, unit in pairs(spawners[name].result_units) do
+for index, name in pairs(util.get_spawner_order()) do
+  for unit_name, unit in pairs(data.raw["unit-spawner"][name].result_units) do
     if not deployer_recipe_catagories[unit[1]] then
       deployer_recipe_catagories[unit[1]] = util.deployer_name(name)
     end
@@ -305,9 +297,7 @@ turrets["big-worm-turret"].collision_box = util.area({0,0}, 1.5)
 turrets["behemoth-worm-turret"].collision_box = util.area({0,0}, 2)
 
 for index, pollution_cost in pairs(pollution_values_worms) do
-  log(pollution_cost)
   for index, worm in pairs(dependency_list_worms[pollution_cost]) do
-    log(worm)
     make_worm(turrets[worm])
   end
 end

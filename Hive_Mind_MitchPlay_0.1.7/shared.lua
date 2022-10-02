@@ -5,11 +5,7 @@ local data = {}
 data.deployers =
 {
   biter_deployer = "biter-deployer",
-  spitter_deployer = "spitter-deployer",
-  cb_cold_deployer = "cb-cold-deployer",
-  explosive_biter_deployer = "explosive_biter_deployer",
-  bob_biter_deployer = "bob-biter-deployer",
-  bob_spitter_deployer = "bob-spitter-deployer"
+  spitter_deployer = "spitter-deployer"
 }
 
 data.players =
@@ -86,15 +82,14 @@ data.default_unlocked =
 
 data.needs_tech =
 {
-  [data.creep_tumor] = {},
-  [data.armored_creep_tumor] = {"hivemind-unlock-creep-tumor"},
-  [data.creep_spreader] = {"hivemind-unlock-creep-tumor"},
   [data.creep_wall] = {},
+  [data.armored_creep_tumor] = {"hivemind-unlock-"..data.creep_wall},
+  [data.creep_spreader] = {"hivemind-unlock-"..data.creep_wall},
   [data.creep_chest] = {},
   [data.pollution_mining_drill] = {},
-  [data.advanced_pollution_mining_drill] = {"hivemind-unlock-pollution-mining-drill"},
-  [data.pollution_oil_drill] = {},
-  [data.advanced_pollution_oil_drill] = {"hivemind-unlock-pollution-oil-drill","hivemind-unlock-advanced-pollution-mining-drill"},
+  [data.advanced_pollution_mining_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.creep_chest},
+  [data.pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.creep_chest},
+  [data.advanced_pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_oil_drill, "hivemind-unlock-"..data.advanced_pollution_mining_drill},
 }
 
 data.needs_oponent_tech =
@@ -127,6 +122,7 @@ data.needs_creep =
 data.pollution_cost_multiplier = 1
 data.deployer_speed_modifier = 0.25
 data.base_starting_distance = 500 --this means that at 100% starting area biters spawn at around this number
+data.spawning_attempts_per_radius = 30 --it schrinks the spawning radius 3 times (75%, 50% and 25%) and attempts to spawn the biter player in that radus
 
 data.evolution_factor_to_pollution_cost = --pollution_cost = base + round(multiplier *((round(evolution_factor,1)*10)^(power_effect * evolution_factor)),0) * 25
 {
@@ -138,8 +134,8 @@ data.evolution_factor_to_pollution_cost = --pollution_cost = base + round(multip
 data.summon_starter_data = {
   [data.players.small_biter_player] = {
     ["units"] = {
-      ["small-biter"] = 17,
-      ["small-spitter"] = 8,
+      ["small-biter"] = 20,
+      ["small-spitter"] = 10,
       --["small-builder"] = 10
     },
     ["default_biters_and_worm_unlocked_factor"] = 0
@@ -151,7 +147,7 @@ data.summon_starter_data = {
       ["medium-biter"] = 4,
       ["medium-spitter"] = 3
     },
-    ["default_biters_and_worm_unlocked_factor"] = 0,2
+    ["default_biters_and_worm_unlocked_factor"] = 0.35
   },
   [data.players.big_biter_player] = {
     ["units"] = {
@@ -160,7 +156,7 @@ data.summon_starter_data = {
       ["big-biter"] = 8,
       ["big-spitter"] = 3
     },
-    ["default_biters_and_worm_unlocked_factor"] = 0,4
+    ["default_biters_and_worm_unlocked_factor"] = 0.7
   },
   [data.players.behemoth_biter_player] = {
     ["units"] = {
@@ -169,7 +165,7 @@ data.summon_starter_data = {
       ["behemoth-biter"] = 2,
       ["behemoth-spitter"] = 2
     },
-    ["default_biters_and_worm_unlocked_factor"] = 0,6
+    ["default_biters_and_worm_unlocked_factor"] = 1
   }
 }
 

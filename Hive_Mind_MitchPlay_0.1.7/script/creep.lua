@@ -24,20 +24,34 @@ local on_chunk_generated = function(event)
   end
 end
 
-local creep_spread_map =
-{
-  ["biter-deployer"] = true,
-  ["spitter-deployer"] = true,
-  ["biter-spawner"] = true,
-  ["spitter-spawner"] = true,
-  ["creep-spreader"] = true,
-  ["creep-tumor"] = true,
-  ["armored-creep-tumor"] = true
-}
+local creep_spread_map
+local get_creep_spread_map = function()
+  if creep_spread_map then return creep_spread_map end
+  creep_spread_map =
+  {
+    --["biter-deployer"] = true,
+    --["spitter-deployer"] = true,
+    --["biter-spawner"] = true,
+    --["spitter-spawner"] = true,
+    ["creep-spreader"] = true,
+    ["creep-tumor"] = true,
+    ["armored-creep-tumor"] = true
+  }
+  for index, name in pairs(util.get_spawner_order()) do
+    creep_spread_map[name] = true
+    creep_spread_map[util.deployer_name(name)] = true
+  end
+  return creep_spread_map
+end
 
-local creep_spread_list = {}
-for name, bool in pairs (creep_spread_map) do
-  table.insert(creep_spread_list, name)
+local creep_spread_list
+local get_creep_spread_list = function()
+  if creep_spread_list then return creep_spread_list end
+  creep_spread_list = {}
+  for name, bool in pairs (get_creep_spread_map()) do
+    table.insert(creep_spread_list, name)
+  end
+  return creep_spread_list
 end
 
 local shuffle_table = function(table)
@@ -55,7 +69,7 @@ local on_built_entity = function(event)
   local entity = event.created_entity or event.entity
   if not (entity and entity.valid) then return end
 
-  if creep_spread_map[entity.name] then
+  if get_creep_spread_map()[entity.name] then
     local unit_number = entity.unit_number
     if not script_data.spreading_landmines[unit_number] then
       local landmine = entity.surface.create_entity{name = names.creep_landmine, position = entity.position, force = entity.force}
@@ -321,7 +335,7 @@ lib.get_events = function() return events end
 lib.on_init = function()
   global.creep = global.creep or script_data
   for k, surface in pairs (game.surfaces) do
-    for k, v in pairs (surface.find_entities_filtered{name = creep_spread_list}) do
+    for k, v in pairs (surface.find_entities_filtered{name = get_creep_spread_list()}) do
       on_built_entity({entity = v})
     end
   end
@@ -335,7 +349,7 @@ lib.on_configuration_changed = function()
   if global.creep then return end
   global.creep = script_data
   for k, surface in pairs (game.surfaces) do
-    for k, v in pairs (surface.find_entities_filtered{name = creep_spread_list}) do
+    for k, v in pairs (surface.find_entities_filtered{name = get_creep_spread_list()}) do
       on_built_entity({entity = v})
     end
   end

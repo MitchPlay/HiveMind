@@ -113,7 +113,7 @@ reset_hivemind_force = function(player)
 
   force.evolution_factor = enemy_force.evolution_factor
   for k, recipe in pairs (force.recipes) do
-    recipe.enabled = names.default_unlocked[recipe.name]
+    recipe.enabled = util.is_default_unlocked(recipe.name)
   end
 
 end
@@ -169,14 +169,14 @@ local characters =
   [names.players.small_biter_player] = 0
 }
 
-local random_spawn_location = function(player)
-  return util.radian_distance_to_x_y(math.random()*6.28, (math.random()*0.2+0.9)*names.base_starting_distance*player.surface.map_gen_settings.starting_area)
+local random_spawn_location = function(player, shrinkage)
+  return util.radian_distance_to_x_y(math.random()*6.28, (math.random()*0.2+0.9)*names.base_starting_distance*player.surface.map_gen_settings.starting_area*shrinkage)
 end
 
 local create_character = function(player)
 
   local force = player.force
-  local factor = force.evolution_factor
+  local factor = game.forces.enemy.evolution_factor
   local name = names.players.small_biter_player
   for character, minimum_factor in pairs (characters) do
     if factor >= minimum_factor then
@@ -191,9 +191,14 @@ local create_character = function(player)
   if closest then
     position = surface.find_non_colliding_position(name, closest.position, 64, 1)
   else
-    position = surface.find_non_colliding_position(name, random_spawn_location(player), 64, 1)
+    for x = 0, (names.spawning_attempts_per_radius * 4 - 1), 1 do
+      local shrinkage = (4 - math.floor(x/names.spawning_attempts_per_radius)) / 4
+      position = surface.find_non_colliding_position(name, random_spawn_location(player, shrinkage), 64, 1)
+      if position then log("[gps="..position.x..","..position.y.."]  "..shrinkage) break end
+    end
   end
-  if not position then return end
+  if not position then position = surface.find_non_colliding_position(name, origin, 64, 1) end
+  if not position then return nil end
   player.character = surface.create_entity
   {
     name = name,
@@ -202,7 +207,7 @@ local create_character = function(player)
   }
   reset_gun_inventory(player)
   add_biter_light(player)
-
+  return name
 end
 
 local summon_starter_pack = function(player)
@@ -224,6 +229,22 @@ local summon_starter_pack = function(player)
       force = force
     }
    end
+  end
+
+  if starter_package.default_biters_and_worm_unlocked_factor == 0 then return end
+
+  local term = 1
+  if player.character.name == "behemoth-biter-player" then term = game.forces.enemy.evolution_factor end
+
+  local pollution_free = term * 3.5 * util.evo_factor_to_pollution_cost(starter_package.default_biters_and_worm_unlocked_factor * game.forces.enemy.evolution_factor)
+  log("it did the starter pack tech thing.  "..pollution_free.."   "..starter_package.default_biters_and_worm_unlocked_factor * game.forces.enemy.evolution_factor)
+  for name, technology in pairs(force.technologies) do
+    local is_in_needs_tech = names.needs_tech[string.gsub(name,"hivemind%-unlock%-","")]
+    if name:find("hivemind") and not is_in_needs_tech then
+      if technology.research_unit_count <= pollution_free then
+        technology.researched = true
+      end
+    end
   end
 
   --the stuff for bonus tech
@@ -342,16 +363,14 @@ end
 local biter_quickbar
 local biter_quickbar = function()
   if biter_quickbar then return biter_quickbar end
-  biter_quickbar = {}
-  for name, deployer in pairs(game.item_prototypes) do
-    if deployer.subgroup.name == "hivemind-deployer" then
+  biter_quickbar = util.get_deployer_order()
+  for name, pollution in pairs (names.required_pollution) do
+    if game.item_prototypes[name] and game.item_prototypes[name].subgroup.name ~= "hivemind-deployer" and game.item_prototypes[name].subgroup.name ~= "worm-subgroup" then
       table.insert(biter_quickbar, name)
     end
   end
-  for name, pollution in pairs (names.required_pollution) do
-    if game.item_prototypes[name] and game.item_prototypes[name].subgroup.name ~= "hivemind-deployer" then
-      table.insert(biter_quickbar, name)
-    end
+  for index, name in pairs(util.get_worm_order()) do
+    table.insert(biter_quickbar, name)
   end
   return biter_quickbar
 end
@@ -455,8 +474,10 @@ local check_hivemind_disband = function(force)
   --We just need to turn the crafting machines back into spawners.
 
   local map = {}
-  for k, v in pairs (deploy_map) do
-    map[v] = k
+  for name, entity in pairs (game.entity_prototypes) do
+    if entity.type == "unit-spawner" then
+      map[name] = util.deployer_name(name)
+    end
   end
 
   local destroy_map_type =

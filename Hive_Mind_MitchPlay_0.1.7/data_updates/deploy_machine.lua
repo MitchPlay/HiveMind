@@ -142,6 +142,5 @@ data:extend
 
 for name, spawner in pairs (data.raw["unit-spawner"]) do
   local deployer_name =  util.deployer_name(name)
-  log(deployer_name)
   make_deployer(name, deployer_name)
 end

@@ -29,9 +29,14 @@ end
 local names = names.deployers
 local units = names.units
 --todo allow other mods to add deployers
-local spawner_map = {}
-for k, deployer in pairs (names) do
-  spawner_map[deployer] = true
+local spawner_map
+local get_spawner_map = function()
+  if spawner_map then return spawner_map end
+  spawner_map = {}
+  for index, name in pairs(util.get_spawner_list()) do
+    spawner_map[util.deployer_name(name)] = true
+  end
+  return spawner_map
 end
 
 
@@ -50,11 +55,12 @@ local get_prototype = function(name)
   return prototype
 end
 
-local required_pollution = shared.required_pollution
+local required_pollution = util.required_pollution
 local pollution_cost_multiplier = shared.pollution_cost_multiplier
 
-local get_required_pollution = function(name)
-  return required_pollution[name] * pollution_cost_multiplier
+local get_required_pollution = function(name, entity)
+  if entity.type == "entity-ghost" then entity = game.entity_prototypes[name] end
+  return required_pollution(name, entity) * pollution_cost_multiplier
 end
 
 local unit_list
@@ -297,8 +303,8 @@ local needs_technology
 local get_needs_technology = function(name)
   if needs_technology then return needs_technology[name] end
   needs_technology = {}
-  for name, entity in pairs(required_pollution) do
-    if game.technology_prototypes["hivemind-unlock-"..name] then
+  for name, tech in pairs(game.technology_prototypes) do
+    if name:find("hivemind-unlock-") then
       needs_technology[name] = true
     end
   end
@@ -368,11 +374,11 @@ local check_ghost = function(ghost_data)
   end
 
   if progress and rendering.is_valid(progress) then
-    rendering.set_text(progress, math.floor((1 - (ghost_data.required_pollution / get_required_pollution(entity.ghost_name))) * 100) .. "%")
+    rendering.set_text(progress, math.floor((1 - (ghost_data.required_pollution / get_required_pollution(ghost_name, get_prototype(ghost_name)))) * 100) .. "%")
   else
     progress = rendering.draw_text
     {
-      text = math.floor((1 - (ghost_data.required_pollution / get_required_pollution(entity.ghost_name))) * 100) .. "%",
+      text = math.floor((1 - (ghost_data.required_pollution / get_required_pollution(ghost_name, get_prototype(ghost_name)))) * 100) .. "%",
       surface = surface,
       target = entity,
       --target_offset = {0, 1},
@@ -467,7 +473,7 @@ local spawner_ghost_built = function(entity, player_index)
     return
   end
 
-  local pollution = get_required_pollution(entity.ghost_name)
+  local pollution = get_required_pollution(ghost_name, get_prototype(ghost_name))
   local ghost_data = {entity = entity, required_pollution = pollution}
   local update_tick = entity.unit_number % ghost_update_interval
   data.ghost_tick_check[update_tick] = data.ghost_tick_check[update_tick] or {}
@@ -481,13 +487,13 @@ local on_built_entity = function(event)
 
   --make_proxy(entity)
 
-  if (spawner_map[entity.name]) then
+  if (get_spawner_map()[entity.name]) then
     return spawner_built(entity)
   end
 
   if entity.type == "entity-ghost" then
     local ghost_name = entity.ghost_name
-    if required_pollution[ghost_name] then
+    if util.required_pollution(ghost_name, get_prototype(ghost_name)) then
       return spawner_ghost_built(entity, event.player_index)
     end
   end
