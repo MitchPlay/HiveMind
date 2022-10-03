@@ -129,7 +129,7 @@ create_hivemind_force = function(player)
   else
     force = game.create_force("hivemind-"..player.index)
   end
-  reset_hivemind_force(force)
+  reset_hivemind_force(player)
   return force
 end
 
@@ -386,6 +386,8 @@ end
 
 join_hive = function(player)
 
+  if player.controller_type ~= defines.controllers.character then return end
+
   local force = get_hivemind_force(player)
   if script_data.force_balance then
     local max = 1
@@ -520,6 +522,8 @@ local check_hivemind_disband = function(force)
 end
 
 leave_hive = function(player)
+  
+  if player.controller_type ~= defines.controllers.character then return end 
 
   local previous_life_data = script_data.previous_life_data[player.index]
   local force = previous_life_data.force
