@@ -121,8 +121,7 @@ data.needs_creep =
 
 data.pollution_cost_multiplier = 1
 data.deployer_speed_modifier = 0.25
-data.base_starting_distance = 500 --this means that at 100% starting area biters spawn at around this number
-data.spawning_attempts_per_radius = 30 --it schrinks the spawning radius 3 times (75%, 50% and 25%) and attempts to spawn the biter player in that radus
+data.spawning_attempts_per_radius = 30 --it schrinks the spawning radius 5 times (83%, 67%, 50%, 33% and 17%) and attempts to spawn the biter player in that radus
 
 data.evolution_factor_to_pollution_cost = --pollution_cost = base + round(multiplier *((round(evolution_factor,1)*10)^(power_effect * evolution_factor)),0) * 25
 {

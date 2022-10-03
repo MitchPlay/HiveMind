@@ -3,6 +3,13 @@ local require = function(name) return require("data/technologies/"..name) end
 require("biter_damage")
 
 local biter = data.raw.unit["small-biter"]
+local max_level
+if settings.startup["hivemind-max-popcap"].value == 0 then
+  max_level = "infinite"
+else
+  max_level = settings.startup["hivemind-max-popcap"].value
+end
+
 
 data:extend({
     {
@@ -43,8 +50,8 @@ data:extend({
         },
         time = 1
       },
-      max_level = "infinite",
       upgrade = true,
+      max_level = max_level,
       order = "popcap",
       enabled = false
     }
@@ -68,7 +75,7 @@ local make_tech = function(prototype, icons)
     prerequisites = names.needs_tech[prototype],
     unit =
     {
-      count_formula = names.required_pollution[prototype] * 15,
+      count_formula = names.required_pollution[prototype] * 10,
       ingredients =
       {
         {names.pollution_proxy, 1}

@@ -95,13 +95,17 @@ reset_hivemind_force = function(player)
   force.share_chart = true
 
   local enemy_force = game.forces.enemy
-  enemy_force.share_chart = true
-  be_friends(force, enemy_force)
+  if not settings.global["hivemind-hostile-to-enemies"].value then
+    enemy_force.share_chart = true
+    be_friends(force, enemy_force)
+  end
 
   --hivemind friends
-  for _, forces in pairs(game.forces) do
-    if is_hivemind_force(forces) and forces ~= force then
-      be_friends(force, forces)
+  if not settings.global["hivemind-hostile-to-hivemind"].value then
+    for _, forces in pairs(game.forces) do
+      if is_hivemind_force(forces) and forces ~= force then
+        be_friends(force, forces)
+      end
     end
   end
 
@@ -119,8 +123,13 @@ reset_hivemind_force = function(player)
 end
 
 create_hivemind_force = function(player)
-  local force = game.create_force("hivemind-"..player.index)
-  reset_hivemind_force(player)
+  local force
+  if settings.global["hivemind-is-one-team"].value == true then
+    force = game.create_force("hivemind")
+  else
+    force = game.create_force("hivemind-"..player.index)
+  end
+  reset_hivemind_force(force)
   return force
 end
 
@@ -170,7 +179,7 @@ local characters =
 }
 
 local random_spawn_location = function(player, shrinkage)
-  return util.radian_distance_to_x_y(math.random()*6.28, (math.random()*0.2+0.9)*names.base_starting_distance*player.surface.map_gen_settings.starting_area*shrinkage)
+  return util.radian_distance_to_x_y(math.random()*6.28, (math.random()*0.2+0.9)*settings.global["hivemind-spawning-distance"].value*player.surface.map_gen_settings.starting_area*shrinkage)
 end
 
 local create_character = function(player)
@@ -191,8 +200,8 @@ local create_character = function(player)
   if closest then
     position = surface.find_non_colliding_position(name, closest.position, 64, 1)
   else
-    for x = 0, (names.spawning_attempts_per_radius * 4 - 1), 1 do
-      local shrinkage = (4 - math.floor(x/names.spawning_attempts_per_radius)) / 4
+    for x = 0, (names.spawning_attempts_per_radius * 6 - 1), 1 do
+      local shrinkage = (6 - math.floor(x/names.spawning_attempts_per_radius)) / 6
       position = surface.find_non_colliding_position(name, random_spawn_location(player, shrinkage), 64, 1)
       if position then log("[gps="..position.x..","..position.y.."]  "..shrinkage) break end
     end
