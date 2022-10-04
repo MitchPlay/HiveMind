@@ -6,6 +6,17 @@ local make_deployer = function(origin, name)
     local machine = util.copy(data.raw["assembling-machine"]["assembling-machine-2"])
     local graphics = util.copy(data.raw["unit-spawner"][origin])
 
+    local localised_string
+    if name == "spitter-deployer" or name == "biter-deployer" then
+      localised_string = {name}
+    else
+      if graphics.localised_name then
+        localised_string = graphics.localised_name
+      else
+        localised_string = {"entity-name."..graphics.name}
+      end
+    end
+
     for k, animation in pairs (graphics.animations) do
       for k, layer in pairs (animation.layers) do
         layer.animation_speed = 0.5 / shared.deployer_speed_modifier
@@ -14,7 +25,7 @@ local make_deployer = function(origin, name)
     end
 
     machine.name = name
-    machine.localised_name = {name or graphics.localised_name}
+    machine.localised_name = localised_string
     machine.localised_description = {"requires-pollution", util.required_pollution(name, graphics) * shared.pollution_cost_multiplier}
     machine.icon = graphics.icon
     machine.icon_size = graphics.icon_size
@@ -79,7 +90,7 @@ local make_deployer = function(origin, name)
     {
       type = "item",
       name = name,
-      localised_name = {name},
+      localised_name = localised_string,
       localised_description = machine.localised_description,
       icon = machine.icon,
       icon_size = machine.icon_size,
@@ -100,7 +111,7 @@ local make_deployer = function(origin, name)
     local recipe = {
       type = "recipe",
       name = name,
-      localised_name = {name},
+      localised_name = localised_string,
       enabled = false,
       ingredients = {},
       energy_required = math.huge,

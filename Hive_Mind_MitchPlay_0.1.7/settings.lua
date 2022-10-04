@@ -19,6 +19,15 @@ data:extend({
         default_value = 500
     },
     {
+        type = "int-setting",
+        name = "hivemind-switch-timer",
+        localised_name = {"settings.hivemind-switch-timer"},
+        localised_description = {"settings.hivemind-switch-timer-description"},
+        setting_type = "runtime-global",
+        minimum_value = 0,
+        default_value = 7200
+    },
+    {
         type = "bool-setting",
         name = "hivemind-hostile-to-hivemind",
         localised_name = {"settings.hivemind-hostile-to-hivemind"},

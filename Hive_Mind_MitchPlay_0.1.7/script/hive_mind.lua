@@ -6,7 +6,8 @@ local script_data =
   player_lights = {},
   previous_life_data = {},
   player_spawns = {},
-  force_balance = false
+  force_balance = false,
+  player_can_switch_tick = {}
 }
 
 local convert_nest
@@ -388,6 +389,15 @@ join_hive = function(player)
 
   if player.controller_type ~= defines.controllers.character then return end
 
+  if script_data.player_can_switch_tick[player.index] then
+    if script_data.player_can_switch_tick[player.index] > game.tick then
+      player.print({"script-text.cant-join-time", math.ceil((script_data.player_can_switch_tick[player.index] - game.tick)/60)})
+      return 
+    end
+  end
+
+  script_data.player_can_switch_tick[player.index] = settings.global["hivemind-switch-timer"].value + game.tick
+
   local force = get_hivemind_force(player)
   if script_data.force_balance then
     local max = 1
@@ -523,7 +533,16 @@ end
 
 leave_hive = function(player)
   
-  if player.controller_type ~= defines.controllers.character then return end 
+  if player.controller_type ~= defines.controllers.character then return end
+
+  if script_data.player_can_switch_tick[player.index] then
+    if script_data.player_can_switch_tick[player.index] >= game.tick then
+      player.print({"script-text.cant-leave-time", math.ceil((script_data.player_can_switch_tick[player.index] - game.tick)/60)})
+      return
+    end
+  end
+
+  script_data.player_can_switch_tick[player.index] = settings.global["hivemind-switch-timer"].value + game.tick
 
   local previous_life_data = script_data.previous_life_data[player.index]
   local force = previous_life_data.force
