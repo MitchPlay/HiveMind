@@ -7,6 +7,7 @@ Major Features:
 		- The Hivemind now has a Working Pollution Based Tech Tree
 		- New Timed Delay for joining the Hivemind
 		- Players can no longer Join the Hiveming During the Starting Cutscene (Fixing a lot of bugs caused by it)
+		- Lots of Mod Compatitbility Fixes
 
 	~ Building Changes ~
 		- Creep wall Hp Increased: 45 --> 115
