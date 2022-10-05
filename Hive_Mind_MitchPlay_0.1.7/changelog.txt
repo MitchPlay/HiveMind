@@ -10,8 +10,6 @@ Major Features:
 		- Creep wall Hp Increased: 45 --> 115
 		- Creep Spreader Hp Increased: 75 --> 315
 		- Armored Creep Tumor Hp Increased: 116 --> 215
-		- Advanced Oil Pollution Drill Hp Increased: 400 --> 425
-		- Advanced Oil Pollution Drill Pollution Porduction Increased: 
 		- All Worms have been Buffed Slightly to Fit The New Tech Tree
 
 	~ Mod Dependency Changes ~
