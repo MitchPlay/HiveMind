@@ -28,7 +28,6 @@ drill.icon = nil
 drill.name = name
 drill.localised_name = {name}
 drill.order = "noob"
-drill.max_health = 425
 drill.collision_box = util.area({0,0}, 1.01)
 drill.selection_box = util.area({0,0}, 1.5)
 drill.max_health = 750
