@@ -44,6 +44,7 @@ local make_deployer = function(origin, name)
     --machine.dying_explosion = graphics.dying_explosion
     machine.collision_mask = {"water-tile", "player-layer", "train-layer"}
     machine.order = graphics.order
+    machine.healing_per_tick = graphics.healing_per_tick
 
     machine.open_sound =
     {
