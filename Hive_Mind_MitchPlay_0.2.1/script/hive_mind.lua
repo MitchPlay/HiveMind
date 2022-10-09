@@ -71,6 +71,8 @@ local create_hivemind_force
 
 local get_hivemind_force = function(player)
   if player.force == "hivemind" then return game.forces.hivemind end
+  if player.force == "hivemind"..player.index then return game.forces["hivemind-"..player.index] end
+  if settings.global["hivemind-is-one-team"].value == true then return game.forces.hivemind or create_hivemind_force(player) end
   return game.forces["hivemind-"..player.index] or create_hivemind_force(player)
 end
 
@@ -527,7 +529,7 @@ local check_hivemind_disband = function(force)
     end
   end
 
-  --game.merge_forces(force, game.forces.enemy)
+  game.merge_forces(force, game.forces.enemy)
 
 end
 
@@ -551,6 +553,7 @@ leave_hive = function(player)
   local character_name = previous_life_data.character_name
   local color = previous_life_data.color or {r = 255, g = 255, b = 255}
   local chat_color = previous_life_data.chat_color or color
+  local hivemind_force = player.force
 
   local biter = player.character
   player.character = nil
@@ -587,7 +590,8 @@ leave_hive = function(player)
   player.tag = previous_life_data.tag or ""
 
   game.print{"left-hive", player.name}
-  check_hivemind_disband(player.force)
+  check_hivemind_disband(hivemind_force)
+  log(hivemind_force.name)
 
 end
 
