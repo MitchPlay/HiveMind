@@ -204,7 +204,7 @@ local create_character = function(player)
     for x = 0, (names.spawning_attempts_per_radius * 6 - 1), 1 do
       local shrinkage = (6 - math.floor(x/names.spawning_attempts_per_radius)) / 6
       position = surface.find_non_colliding_position(name, random_spawn_location(player, shrinkage), 64, 1)
-      if position then log("[gps="..position.x..","..position.y.."]  "..shrinkage) break end
+      if position then break end
     end
   end
   if not position then position = surface.find_non_colliding_position(name, origin, 64, 1) end
