@@ -1,3 +1,17 @@
+Version: 0.2.2
+Date: 2022-10-12
+
+
+ 	 ~ Mod Compatibility ~
+   		 - now compatiable with enemy race manager
+   		 - now compatiable with Arachnids
+   		 - now compatiable with humanoids 2
+   		 - this may have lead to more compatibilities as well
+
+	~ fixes ~
+		- hivemind people can no loner place something that is not yet researched.
+---------------------------------------------------------------------------------------------------
+
 Version: 0.2.1
 Date: 2022-10-11
 Major Features:
