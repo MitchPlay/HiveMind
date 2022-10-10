@@ -5,14 +5,14 @@ Major Features:
 	~ Commands ~
 		- added a /hivemind command that gives insight into hivemind forces and players
 
-  ~ Mod Compatibility ~
-    - now compatiable with enemy race manager
-    - now compatiable with natural evolution enemies (fixed)
-    - this may have lead to more compatibilities as well
+ 	 ~ Mod Compatibility ~
+   		 - now compatiable with enemy race manager
+   		 - now compatiable with natural evolution enemies (fixed)
+   		 - this may have lead to more compatibilities as well
 
 	~ fixes ~
 		- the single hivemind team map setting now does not crash anymore
-    - popcap is no longer global.
+    		- popcap is no longer global.
 ---------------------------------------------------------------------------------------------------
 
 
