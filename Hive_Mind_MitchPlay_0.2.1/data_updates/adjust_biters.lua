@@ -255,7 +255,7 @@ for deployer, spawn_list in pairs(deployer_spawn_list) do
   pollution_values.deployers[deployer] = {}
   for index, unit_name in pairs(spawn_list) do
     local unit = units[unit_name]
-    if unit.name:find("biter") or unit.name:find("spitter") then
+    --if unit.name:find("biter") or unit.name:find("spitter") then
       if dependency_list.deployers[deployer][unit.pollution_to_join_attack] then
         if util.is_default_unlocked(unit.name) then
           table.insert(dependency_list.deployers[deployer][unit.pollution_to_join_attack], 1, unit.name)
@@ -276,7 +276,7 @@ for deployer, spawn_list in pairs(deployer_spawn_list) do
         dependency_list.biters[unit.pollution_to_join_attack] = {unit.name}
         table.insert(pollution_values.biters, unit.pollution_to_join_attack)
       end
-    end
+    --end
   end
   table.sort(pollution_values.deployers[deployer])
 end

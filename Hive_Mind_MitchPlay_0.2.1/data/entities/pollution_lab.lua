@@ -27,7 +27,14 @@ util.recursive_hack_tint(spawner_graphics, tint)
 
 local on_animation = {layers = {}}
 
-for k, layer in pairs (spawner_graphics.animations[2].layers) do
+local spawner_animation
+if spawner_graphics.animations[2] then
+  spawner_animation = spawner_graphics.animations[2].layers
+else
+  spawner_animation = spawner_graphics.animations.layers
+end
+
+for k, layer in pairs (spawner_animation) do
   if layer.frame_count == 8 then
     layer.repeat_count = 1
   end
@@ -45,12 +52,22 @@ for k, layer in pairs (graphics.on_animation.layers or graphics.on_animation) do
   table.insert(on_animation.layers, layer)
 end
 
+local frame_list = {}
+for _, layer in pairs(on_animation.layers) do
+  table.insert(frame_list, layer.frame_count or 1)
+end
+frame_list = util.get_propper_repeat_counts(frame_list)
+for _, layer in pairs(on_animation.layers) do
+  layer.repeat_count = frame_list / (layer.frame_count or 1)
+end
+
+
 
 --error(serpent.block(on_animation))
 
 local off_animation = {layers = {}}
 
-for k, layer in pairs (spawner_graphics.animations[2].layers) do
+for k, layer in pairs (spawner_animation) do
   local new = util.copy(layer)
   new.frame_count = 1
   new.run_mode = nil
@@ -61,6 +78,15 @@ end
 for k, layer in pairs (graphics.off_animation.layers or graphics.off_animation) do
   util.shift_layer(layer, {0, -2.2})
   table.insert(off_animation.layers, layer)
+end
+
+local frame_list = {}
+for _, layer in pairs(off_animation.layers) do
+  table.insert(frame_list, layer.frame_count or 1)
+end
+frame_list = util.get_propper_repeat_counts(frame_list)
+for _, layer in pairs(off_animation.layers) do
+  layer.repeat_count = frame_list / (layer.frame_count or 1)
 end
 
 local lab =

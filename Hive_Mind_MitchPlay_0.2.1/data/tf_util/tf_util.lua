@@ -464,7 +464,6 @@ end
 local spawner_order
 util.get_spawner_order = function()
   if spawner_order then return spawner_order end
-  log("spawn order start")
   spawner_order = {}
   local different_pollution_values = {
     shared.required_pollution[shared.deployers.biter_deployer],
@@ -554,5 +553,18 @@ util.get_worm_order = function()
   end
   return worm_order
 end
+
+util.get_propper_repeat_counts = function(num_list)
+  local lcm = 1
+  for _,x in pairs(num_list) do
+    local multiplier = 1
+    while math.floor(lcm*multiplier/x) ~= lcm*multiplier/x do
+      multiplier = 1 + multiplier
+    end
+    lcm = lcm * multiplier
+  end
+  return lcm
+end
+
 
 return util

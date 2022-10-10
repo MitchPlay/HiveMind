@@ -306,9 +306,11 @@ local needs_technology
 local get_needs_technology = function(name)
   if needs_technology then return needs_technology[name] end
   needs_technology = {}
-  for name, tech in pairs(game.technology_prototypes) do
-    if name:find("hivemind-unlock-") then
-      needs_technology[name] = true
+  for _, tech in pairs(game.technology_prototypes) do
+    for _, effect in pairs(tech.effects) do
+      if effect.type == "unlock-recipe" then
+        needs_technology[effect.recipe] = tech.name
+      end
     end
   end
   return needs_technology[name]
@@ -444,20 +446,22 @@ local ghost_update_interval = 60
 local spawner_ghost_built = function(entity, player_index)
   local ghost_name = entity.ghost_name
 
-  if get_needs_technology(ghost_name) and not entity.force.technologies["hivemind-unlock-"..ghost_name].researched then
-    if player_index then
-      local player = game.get_player(player_index)
-      player.create_local_flying_text
-      {
-        text={"entity-not-unlocked", get_prototype(ghost_name).localised_name},
-        position=entity.position,
-        color=nil,
-        time_to_live=nil,
-        speed=nil
-      }
+  if get_needs_technology(ghost_name)
+    if not entity.force.technologies[get_needs_technology(ghost_name)].researched then
+      if player_index then
+        local player = game.get_player(player_index)
+        player.create_local_flying_text
+        {
+          text={"entity-not-unlocked", get_prototype(ghost_name).localised_name},
+          position=entity.position,
+          color=nil,
+          time_to_live=nil,
+          speed=nil
+        }
+      end
+      entity.destroy()
+      return
     end
-    entity.destroy()
-    return
   end
 
   if util.needs_creep(ghost_name) and entity.surface.get_tile(entity.position).name ~= creep_name then
@@ -489,6 +493,7 @@ local on_built_entity = function(event)
   if not (entity and entity.valid) then return end
 
   --make_proxy(entity)
+  if not entity.force.name:find("hivemind") then return end
 
   if (get_spawner_map()[entity.name]) then
     return spawner_built(entity)

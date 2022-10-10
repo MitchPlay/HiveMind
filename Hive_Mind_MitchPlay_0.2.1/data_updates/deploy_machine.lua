@@ -84,7 +84,6 @@ local make_deployer = function(origin, name)
         west = graphics.animations[4],
       }
     else --[[if #graphics.animations == 1 then]]
-      log(serpent.line(graphics.animations))
       machine.animation =
       {
         north = graphics.animations,
