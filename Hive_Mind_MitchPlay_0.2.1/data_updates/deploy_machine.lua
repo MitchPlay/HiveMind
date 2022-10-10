@@ -42,7 +42,6 @@ local make_deployer = function(origin, name)
     machine.localised_description = {"requires-pollution", util.required_pollution(name, graphics) * shared.pollution_cost_multiplier}
     machine.icon = graphics.icon
     machine.icon_size = graphics.icon_size or 64
-    log(machine.icon_size)
     machine.collision_box = util.area({0,0}, 2.5)
     machine.selection_box = util.area({0,0}, 2)
     machine.crafting_categories = {name}
@@ -84,7 +83,8 @@ local make_deployer = function(origin, name)
         south = graphics.animations[3],
         west = graphics.animations[4],
       }
-    elseif #graphics.animations == 1 then
+    else --[[if #graphics.animations == 1 then]]
+      log(serpent.line(graphics.animations))
       machine.animation =
       {
         north = graphics.animations,
@@ -178,7 +178,6 @@ data:extend
 for name, spawner in pairs(data.raw["unit-spawner"]) do
   local deployer_name = util.deployer_name(name)
   if deployer_spawn_list[deployer_name] then
-    log(name)
     make_deployer(name, deployer_name)
   end
 end

@@ -5,7 +5,6 @@ local util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
 deployer_spawn_list = {}
 deployer_recipe_catagories = {}
 
-log(serpent.line(data.raw["unit-spawner"]))
 for index, name in pairs(util.get_spawner_order()) do
   for unit_name, unit in pairs(data.raw["unit-spawner"][name].result_units) do
     if not deployer_recipe_catagories[unit[1]] then
