@@ -1,5 +1,5 @@
 Version: 0.2.0
-Date: 2022-xx-xx
+Date: 2022-10-09
 Major Features:
 
 	~ Major Additions ~
