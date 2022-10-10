@@ -828,6 +828,288 @@ local register_pvp = function()
   events[pvp_events.on_round_start] = on_pvp_round_start
 end
 
+
+local online = function(list, is_force)
+  local return_list = {}
+  for index, name in pairs(list) do
+    if is_force then
+      for _, player in pairs(game.forces[name].players) do
+        if player.connected == true then
+          table.insert(return_list, name)
+        end
+      end
+    else
+      if game.players[name].connected == true then
+        table.insert(return_list, name)
+      end
+    end
+  end
+  return return_list
+end
+
+local force_to_player = function(list)
+  local return_list = {}
+  for _, name in pairs(list) do
+    for _, player in pairs(game.forces[name].players) do
+      table.insert(return_list, player.name)
+    end
+  end
+  return return_list
+end
+
+commands.add_command("hivemind", {"command.hivemind-help"}, function(command)
+  local player = game.get_player(command.player_index)
+  parameters = {}
+
+  if command.parameter then
+    for match in (command.parameter.." "):gmatch("(.-)".." ") do
+      table.insert(parameters, match);
+    end
+  end
+
+  if parameters[1] == "list" or parameters[1] == "l" then
+    table.remove(parameters, 1)
+
+    local is_force = true
+    local only_count = false
+    local list_of_results = {}
+    local result_type = "forces"
+    for _, force in pairs(game.forces) do
+     if is_hivemind_force(force) then
+      table.insert(list_of_results, force.name)
+     end
+    end
+
+    for _, parameter in pairs(parameters) do
+      if (parameter == "player" or parameter == "p") and is_force == true then
+        is_force = false
+        list_of_results = force_to_player(list_of_results)
+        if result_type == "forces" then result_type = "players" end
+        if result_type == "online-forces" then result_type = "online-forces-players" end
+      elseif parameter == "online" or parameter == "o" then
+        list_of_results = online(list_of_results, is_force)
+        if result_type == "forces" then result_type = "online-forces" end
+        if result_type == "players" or result_type == "online-forces-players" then result_type = "online-players" end
+      elseif parameter == "count" or parameter == "c" then
+        only_count = true
+      end
+    end
+
+    player.print({"command.hivemind-result-"..result_type, #list_of_results})
+
+    if not only_count then
+      for _, name in pairs(list_of_results) do
+        if is_force then
+          local online = ""
+          for _, player in pairs(game.forces[name].players) do
+            if player.connected then
+              online = " (online)"
+            end
+          end
+          player.print(name..online)
+        else
+          if game.players[name].connected then
+            player.print(name.." (online)")
+          else
+            player.print(name)
+          end
+        end
+      end
+    end
+
+
+  elseif parameters[1] == "force" or parameters[1] == "f" then
+    table.remove(parameters, 1)
+
+    local force
+    if parameters then
+      if game.players[parameters[1]] then force = game.players[parameters[1]].force end
+      if game.forces[parameters[1]] then force = game.forces[parameters[1]] end
+    end
+    table.remove(parameters, 1)
+
+    if force then
+
+      if parameters[1] == "player" or parameters[1] == "p" then
+        table.remove(parameters, 1)
+
+        local player_list = {}
+        for _, player in pairs(force.players) do
+          table.insert(player_list, player.name)
+        end
+        local result_type = "players"
+        local only_count = false
+
+        for _, parameter in pairs(parameters) do
+          if parameter == "online" or parameter == "o" then
+            player_list = online(player_list)
+            if result_type == "players" then result_type = "online-players" end
+          elseif parameter == "count" or parameter == "c" then
+            only_count = true
+          end
+        end
+
+        player.print({"command.hivemind-result-"..result_type, #player_list})
+
+        if not only_count then
+          for _, name in pairs(player_list) do
+            if game.players[name].connected then
+              player.print(name.." (online)")
+            else
+              player.print(name)
+            end
+          end
+        end
+
+      elseif parameters[1] == "ally" or parameters[1] == "a" or parameters[1] == "fight" or parameters[1] == "f" then
+        
+        local make_friendly = false
+        if parameters[1] == "ally" or parameters[1] == "a" then make_friendly = true end
+        table.remove(parameters, 1)
+        
+        local force_2
+        if parameters then
+          if game.players[parameters[1]] then force_2 = game.players[parameters[1]].force end
+          if game.forces[parameters[1]] then force_2 = game.forces[parameters[1]] end
+        end
+
+        if force_2 then
+          if player.admin then
+            force.set_cease_fire(force_2, make_friendly)
+            force.set_friend(force_2, make_friendly)
+            force_2.set_cease_fire(force, make_friendly)
+            force_2.set_friend(force, make_friendly)
+            player.print({"command.hivemind-ally-fight-set", force.name, force_2.name, (function() if make_friendly == true then return {"command.allies"} end return {"command.enemies"} end)()})
+          else
+            player.print({"command.admin-only", {"command.hivemind-ally-fight-name"}})
+          end
+        else
+          player.print({"command.hivemind-ally-fight"})
+        end
+
+      elseif parameters[1] == "status" or parameters[1] == "s" then
+        table.remove(parameters, 1)
+
+        if parameters[1] == "list" or parameters[1] == "l" then
+          table.remove(parameters, 1)
+
+          local filters_ally = false
+          local filters_cease_fire = false
+          local filters_enemy = false
+
+          for _, parameter in pairs(parameters) do
+            if parameter == "ally" or parameter == "a" then filters_ally = true end
+            if parameter == "cease_fire" or parameter == "f" then filters_cease_fire = true end
+            if parameter == "enemy" or parameter == "e" then filters_enemy = true end
+          end
+          if filters_ally == false and filters_cease_fire == false and filters_enemy == false then
+            filters_ally = true
+            filters_cease_fire = true
+            filters_enemy = true
+          end
+
+          local forces_list = {}
+          for _, check_force in pairs(game.forces) do
+            if check_force ~= force then
+              if force.get_friend(check_force) then
+                if filters_ally == true then
+                  table.insert(forces_list, check_force.name)
+                end
+              elseif force.get_cease_fire(check_force) then
+                if filters_cease_fire == true then
+                  table.insert(forces_list, check_force.name)
+                end
+              else
+                if filters_enemy == true then
+                  table.insert(forces_list, check_force.name)
+                end
+              end
+            end
+          end
+
+          local result_type = "forces"
+          local is_force = true
+          local only_count = false
+
+          for _, parameter in pairs(parameters) do
+            if (parameter == "player" or parameter == "p") and is_force == true then
+              is_force = false
+              forces_list = force_to_player(forces_list)
+              if result_type == "forces" then result_type = "players" end
+              if result_type == "online-forces" then result_type = "online-forces-players" end
+            elseif parameter == "online" or parameter == "o" then
+              forces_list = online(forces_list, is_force)
+              if result_type == "forces" then result_type = "online-forces" end
+              if result_type == "players" or result_type == "online-forces-players" then result_type = "online-players" end
+            elseif parameter == "count" or parameter == "c" then
+              only_count = true
+            end
+          end
+         
+          player.print({"command.hivemind-result-"..result_type, #forces_list})
+        
+          if not only_count then
+            for _, name in pairs(forces_list) do
+              local force_2
+              if is_force then
+                force_2 = game.forces[name]
+              else
+                force_2 = game.players[name].force
+              end
+              local status = " (enemy)"
+              if force.get_cease_fire(force_2) then status = " (cease_fire)" end
+              if force.get_friend(force_2) then status = " (ally)" end
+              if is_force then
+                local online = ""
+                for _, player in pairs(game.forces[name].players) do
+                  if player.connected then
+                    online = " (online)"
+                  end
+                end
+                player.print(name..status..online)
+              else
+                if game.players[name].connected then
+                  player.print(name..status.." (online)")
+                else
+                  player.print(name..status)
+                end
+              end
+            end
+          end
+          
+        elseif parameters[1] == "force" or parameters[1] == "f" then
+          table.remove(parameters, 1)
+
+          local force_2
+          if parameters then
+            if game.players[parameters[1]] then force_2 = game.players[parameters[1]].force end
+            if game.forces[parameters[1]] then force_2 = game.forces[parameters[1]] end
+          end
+
+          if force_2 then
+            local status = " (enemy)"
+            if force.get_cease_fire(force_2) then status = " (cease_fire)" end
+            if force.get_friend(force_2) then status = " (ally)" end
+            player.print(force_2.name..status)
+          else
+            player.print({"command.hivemind-status"})
+          end
+        else
+          player.print({"command.hivemind-status"})
+        end
+
+      else
+        player.print(force.name)
+      end
+    else
+      player.print({"command.hivemind-force"})
+    end
+
+  else
+    player.print({"command.hivemind-hivemind"})
+  end
+end)
+
 local lib = {}
 
 lib.get_events = function() return events end

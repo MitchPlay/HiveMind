@@ -9,7 +9,7 @@ local data =
   enemy_attack_pollution_consumption_modifier = 1,
   can_spawn = false,
   pop_count = {},
-  max_pop_count = 20
+  max_pop_count = {}
 }
 
 local unit_spawned_event
@@ -22,8 +22,11 @@ local get_enemy_attack_pollution_consumption_modifier = function()
   return data.enemy_attack_pollution_consumption_modifier
 end
 
-local get_max_pop_count = function()
-  return data.max_pop_count
+local get_max_pop_count = function(force_index)
+  if not data.max_pop_count[force_index] then
+    data.max_pop_count[force_index] = game.forces[force_index].technologies["popcap"].level * 10 + 20
+  end
+  return data.max_pop_count[force_index]
 end
 
 local names = names.deployers
@@ -92,7 +95,7 @@ local get_unit_size = function(name)
 end
 
 local can_spawn_units = function(force_index, name)
-  return (data.pop_count[force_index] + get_unit_sizes(name) <= get_max_pop_count())
+  return (data.pop_count[force_index] + get_unit_sizes(name) <= get_max_pop_count(force_index))
 end
 
 local update_force_popcap_labels = function(force, caption)
@@ -122,7 +125,7 @@ local update_pop_cap = function()
     local index = force.index
     local current = data.pop_count[index]
     data.pop_count[index] = total
-    local caption = total > 0 and {"popcap", total.."/"..get_max_pop_count()} or ""
+    local caption = total > 0 and {"popcap", total.."/"..get_max_pop_count(index)} or ""
     update_force_popcap_labels(force, caption)
   end
 
@@ -160,7 +163,7 @@ local deploy_unit = function(source, prototype)
     local index = force.index
     data.pop_count[index] = data.pop_count[index] + get_unit_sizes(name)
     script.raise_event(unit_spawned_event, {entity = unit, spawner = source})
-    local caption = data.pop_count[index] > 0 and {"popcap", data.pop_count[index].."/"..get_max_pop_count()} or ""
+    local caption = data.pop_count[index] > 0 and {"popcap", data.pop_count[index].."/"..get_max_pop_count(index)} or ""
     update_force_popcap_labels(force, caption)
   end
 end
@@ -605,7 +608,7 @@ local on_research_finished = function(event)
 
   -- do the pop cap thingy
   if event.research.name:find("popcap") then
-    data.max_pop_count =  get_max_pop_count() + 10
+    data.max_pop_count[event.research.force.index] =  get_max_pop_count(event.research.force.index) + 10
   -- data.max_pop_count = event.research.level * 10 + 20
   end
 
@@ -637,13 +640,13 @@ local events =
   [defines.events.on_research_finished] = on_research_finished
 }
 
-commands.add_command("popcap", "Set the popcap for hive mind biters", function(command)
+commands.add_command("popcap", {"command.popcap-help"}, function(command)
   local player = game.get_player(command.player_index)
-  if not player.admin then player.print("Setting popcap is only for admins") return end
-  if command.parameter == nil then player.print("popcap: "..get_max_pop_count()) return end
-  if not tonumber(command.parameter) then player.print("Popcap must be a number") return end
-  data.max_pop_count = tonumber(command.parameter)
-  player.print("popcap: "..get_max_pop_count())
+  if not player.admin then player.print({"command.admin-only",{"command.popcap-name"}}) return end
+  if command.parameter == nil then player.print({"command.popcap-max", get_max_pop_count(player.force.index)}) return end
+  if not tonumber(command.parameter) then player.print({"command.popcap-no-num"}) return end
+  data.max_pop_count[player.force.index] = tonumber(command.parameter)
+  player.print({"command.popcap-max", get_max_pop_count(player.force.index)})
 end)
 
 local setup_spawn_event = function()
@@ -673,7 +676,15 @@ unit_deployment.on_configuration_changed = function()
   rendering.clear("Hive_Mind_MitchPlay")
   redistribute_on_tick_checks()
   migrate_proxies()
-  data.max_pop_count = data.max_pop_count or 20
+  if type(data.max_pop_count) ~= "table" then
+    local time_store = data.max_pop_count
+    data.max_pop_count = {}
+    for _, force in pairs(game.forces) do
+      if (force.name:find("hivemind")) then
+        data.max_pop_count[force.index] = time_store
+      end
+    end
+  end
 end
 
 return unit_deployment

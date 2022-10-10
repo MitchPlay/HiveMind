@@ -14,7 +14,7 @@ end
 data:extend({
     {
       type = "technology",
-      name = "popcap-1",
+      name = "popcap",
       localised_name = {"popcap_tech"},
       icons = {
             {icon_size = 1,

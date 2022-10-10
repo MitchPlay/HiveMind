@@ -464,6 +464,7 @@ end
 local spawner_order
 util.get_spawner_order = function()
   if spawner_order then return spawner_order end
+  log("spawn order start")
   spawner_order = {}
   local different_pollution_values = {
     shared.required_pollution[shared.deployers.biter_deployer],
@@ -505,7 +506,15 @@ util.get_deployer_order = function()
   if deployer_order then return deployer_order end
   deployer_order = {}
   for index, name in pairs(util.get_spawner_order()) do
-    table.insert(deployer_order, util.deployer_name(name))
+    if game then
+      if game.entity_prototypes[util.deployer_name(name)] then
+        table.insert(deployer_order, util.deployer_name(name))
+      end
+    else
+      if data.raw["assembling-machine"][util.deployer_name(name)] then
+        table.insert(deployer_order, util.deployer_name(name))
+      end
+    end
   end
   return deployer_order
 end

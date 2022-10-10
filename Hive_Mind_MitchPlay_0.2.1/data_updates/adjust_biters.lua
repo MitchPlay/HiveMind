@@ -7,9 +7,6 @@ local default_unlocked = shared.default_unlocked
 local dependency_list = {biters = {}, worms = {}, deployers = {}, deployer = {}}
 local pollution_values = {biters = {}, worms = {}, deployers = {}}
 
-local deployer_recipe_catagories = {}
-local deployer_spawn_list = {}
-
 local make_biter_item = function(prototype, subgroup)
   local item =
   {
@@ -251,22 +248,6 @@ local make_worm = function(turret)
   util.remove_from_list(turret.flags, "placeable-off-grid")
 end
 
-for index, name in pairs(util.get_spawner_order()) do
-  for unit_name, unit in pairs(data.raw["unit-spawner"][name].result_units) do
-    if not deployer_recipe_catagories[unit[1]] then
-      deployer_recipe_catagories[unit[1]] = util.deployer_name(name)
-    end
-  end
-end
-
-for unit, deployer in pairs(deployer_recipe_catagories) do
-  if deployer_spawn_list[deployer] then
-    table.insert(deployer_spawn_list[deployer], unit)
-  else
-    deployer_spawn_list[deployer] = {unit}
-  end
-end
-
 local units = data.raw.unit
 
 for deployer, spawn_list in pairs(deployer_spawn_list) do
@@ -310,7 +291,7 @@ end
 
 for index, spawner in pairs(util.get_spawner_order()) do
   local deployer = util.deployer_name(spawner)
-  local spawn_list = deployer_spawn_list[deployer]
+  local spawn_list = deployer_spawn_list[deployer] or {}
   local max_evo_number = 0
   dependency_list.deployer[deployer] = {}
   for unit_index, unit in pairs(data.raw["unit-spawner"][spawner].result_units) do

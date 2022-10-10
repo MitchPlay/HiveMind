@@ -18,9 +18,22 @@ local make_deployer = function(origin, name)
     end
 
     for k, animation in pairs (graphics.animations) do
-      for k, layer in pairs (animation.layers) do
-        layer.animation_speed = 0.5 / shared.deployer_speed_modifier
-        layer.hr_version.animation_speed = 0.5 / shared.deployer_speed_modifier
+      if k == "layers" then
+        if animation.animation_speed then
+          animation.animation_speed = 0.5 / shared.deployer_speed_modifier
+          if animation.hr_version then
+            animation.hr_version.animation_speed = 0.5 / shared.deployer_speed_modifier
+          end
+        end
+      else
+        for k, layer in pairs (animation.layers) do
+          if layer.animation_speed then
+            layer.animation_speed = 0.5 / shared.deployer_speed_modifier
+            if layer.hr_version then
+              layer.hr_version.animation_speed = 0.5 / shared.deployer_speed_modifier
+            end
+          end
+        end
       end
     end
 
@@ -28,7 +41,8 @@ local make_deployer = function(origin, name)
     machine.localised_name = localised_string
     machine.localised_description = {"requires-pollution", util.required_pollution(name, graphics) * shared.pollution_cost_multiplier}
     machine.icon = graphics.icon
-    machine.icon_size = graphics.icon_size
+    machine.icon_size = graphics.icon_size or 64
+    log(machine.icon_size)
     machine.collision_box = util.area({0,0}, 2.5)
     machine.selection_box = util.area({0,0}, 2)
     machine.crafting_categories = {name}
@@ -62,13 +76,23 @@ local make_deployer = function(origin, name)
     machine.minable = nil
 
     machine.always_draw_idle_animation = true
-    machine.animation =
-    {
-      north = graphics.animations[1],
-      east = graphics.animations[2],
-      south = graphics.animations[3],
-      west = graphics.animations[4],
-    }
+    if #graphics.animations >= 4 then
+      machine.animation =
+      {
+        north = graphics.animations[1],
+        east = graphics.animations[2],
+        south = graphics.animations[3],
+        west = graphics.animations[4],
+      }
+    elseif #graphics.animations == 1 then
+      machine.animation =
+      {
+        north = graphics.animations,
+        east = graphics.animations,
+        south = graphics.animations,
+        west = graphics.animations,
+      }
+    end
     machine.working_sound = graphics.working_sound
     machine.fluid_boxes =
     {
@@ -151,7 +175,10 @@ data:extend
   }
 }
 
-for name, spawner in pairs (data.raw["unit-spawner"]) do
-  local deployer_name =  util.deployer_name(name)
-  make_deployer(name, deployer_name)
+for name, spawner in pairs(data.raw["unit-spawner"]) do
+  local deployer_name = util.deployer_name(name)
+  if deployer_spawn_list[deployer_name] then
+    log(name)
+    make_deployer(name, deployer_name)
+  end
 end
