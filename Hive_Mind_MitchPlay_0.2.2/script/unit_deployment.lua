@@ -446,7 +446,7 @@ local ghost_update_interval = 60
 local spawner_ghost_built = function(entity, player_index)
   local ghost_name = entity.ghost_name
 
-  if get_needs_technology(ghost_name)
+  if get_needs_technology(ghost_name) then
     if not entity.force.technologies[get_needs_technology(ghost_name)].researched then
       if player_index then
         local player = game.get_player(player_index)

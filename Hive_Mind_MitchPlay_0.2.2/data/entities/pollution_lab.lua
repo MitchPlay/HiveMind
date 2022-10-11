@@ -58,7 +58,9 @@ for _, layer in pairs(on_animation.layers) do
 end
 frame_list = util.get_propper_repeat_counts(frame_list)
 for _, layer in pairs(on_animation.layers) do
-  layer.repeat_count = frame_list / (layer.frame_count or 1)
+  if layer.run_mode ~= "forward-then-backward" then
+    layer.repeat_count = frame_list / (layer.frame_count or 1)
+  end
 end
 
 
@@ -86,7 +88,9 @@ for _, layer in pairs(off_animation.layers) do
 end
 frame_list = util.get_propper_repeat_counts(frame_list)
 for _, layer in pairs(off_animation.layers) do
-  layer.repeat_count = frame_list / (layer.frame_count or 1)
+  if layer.run_mode ~= "forward-then-backward" then
+    layer.repeat_count = frame_list / (layer.frame_count or 1)
+  end
 end
 
 local lab =
