@@ -677,10 +677,6 @@ end
 
 unit_deployment.on_configuration_changed = function()
   check_update_map_settings()
-  check_update_pop_cap()
-  rendering.clear("Hive_Mind_MitchPlay")
-  redistribute_on_tick_checks()
-  migrate_proxies()
   if type(data.max_pop_count) ~= "table" then
     local time_store = data.max_pop_count
     data.max_pop_count = {}
@@ -690,6 +686,10 @@ unit_deployment.on_configuration_changed = function()
       end
     end
   end
+  check_update_pop_cap()
+  rendering.clear("Hive_Mind_MitchPlay")
+  redistribute_on_tick_checks()
+  migrate_proxies()
 end
 
 return unit_deployment
