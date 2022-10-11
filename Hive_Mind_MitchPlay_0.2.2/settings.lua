@@ -51,6 +51,15 @@ data:extend({
         setting_type = "runtime-global",
         default_value = false
     },
+    {
+        type = "int-setting",
+        name = "hivemind-max-hive-players",
+        localised_name = {"settings.hivemind-max-hive-players"},
+        localised_description = {"settings.hivemind-max-hive-players-description"},
+        setting_type = "runtime-global",
+        minimum_value = 0,
+        default_value = 0
+    },
     --[[{
         type = "string-setting",
         name = "hivemind-selection-tool",

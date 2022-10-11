@@ -71,7 +71,7 @@ local create_hivemind_force
 
 local get_hivemind_force = function(player)
   if player.force == "hivemind" then return game.forces.hivemind end
-  if player.force == "hivemind"..player.index then return game.forces["hivemind-"..player.index] end
+  if player.force == "hivemind-"..player.index then return game.forces["hivemind-"..player.index] end
   if settings.global["hivemind-is-one-team"].value == true then return game.forces.hivemind or create_hivemind_force(player) end
   return game.forces["hivemind-"..player.index] or create_hivemind_force(player)
 end
@@ -392,13 +392,27 @@ join_hive = function(player)
   if player.controller_type ~= defines.controllers.character then return end
 
   if script_data.player_can_switch_tick[player.index] then
-    if script_data.player_can_switch_tick[player.index] > game.tick then
-      player.print({"script-text.cant-join-time", math.ceil((script_data.player_can_switch_tick[player.index] - game.tick)/60)})
+    if script_data.player_can_switch_tick[player.index] + settings.global["hivemind-switch-timer"].value > game.tick then
+      player.print({"script-text.cant-join-time", math.ceil((script_data.player_can_switch_tick[player.index] + settings.global["hivemind-switch-timer"].value - game.tick)/60)})
       return 
     end
   end
 
-  script_data.player_can_switch_tick[player.index] = settings.global["hivemind-switch-timer"].value + game.tick
+  script_data.player_can_switch_tick[player.index] = game.tick
+
+  if settings.global["hivemind-max-hive-players"].value ~= 0 then
+
+    local hivemind_players = 0
+    for _, force in pairs(game.forces) do
+      if is_hivemind_force(force) then
+        for _, name in pairs(force.player) do
+          hivemind_players = 1 + hivemind_players
+        end
+      end
+    end
+    if hivemind_players >= settings.global["hivemind-max-hive-players"].value then return end
+  end
+
 
   local force = get_hivemind_force(player)
   if script_data.force_balance then
@@ -1097,12 +1111,67 @@ commands.add_command("hivemind", {"command.hivemind-help"}, function(command)
         else
           player.print({"command.hivemind-status"})
         end
+        
+      elseif parameters[1] == "reset" or parameters[1] == "r" then
+      
+        if player.admin then
+          if is_hivemind_force(force) then
+            for _, force_2 in pairs(game.forces) do
+              if force ~= force_2 then
+                local allies = false
+                if force_2.name == "enemy" then
+                  allies = settings.global["hivemind-hostile-to-enemies"].value
+                elseif is_hivemind_force(force_2) then
+                  allies = settings.global["hivemind-hostile-to-hivemind"].value
+                end
+                force.set_cease_fire(force_2, allies)
+                force.set_friend(force_2, allies)
+                force_2.set_cease_fire(force, allies)
+                force_2.set_friend(force, allies)
+              end
+            end
+            player.print({"command.hivemind-reset",force.name})
+
+          else
+            player.print({"command.hivemind-no-reset",force.name})
+          end
+
+        else
+          player.print({"command.admin-only", {"command.hivemind-reset-name"}})
+        end
 
       else
         player.print(force.name)
       end
     else
       player.print({"command.hivemind-force"})
+    end
+
+  elseif parameters[1] == "reset_all" or parameters[1] == "ra" then
+
+    if player.admin then
+
+      for _, force in pairs(game.forces) do
+        if is_hivemind_force(force) then
+          for _, force_2 in pairs(game.forces) do
+            if force ~= force_2 then
+              local allies = false
+              if force_2.name == "enemy" then
+                allies = settings.global["hivemind-hostile-to-enemies"].value
+              elseif is_hivemind_force(force_2) then
+                allies = settings.global["hivemind-hostile-to-hivemind"].value
+              end
+              force.set_cease_fire(force_2, allies)
+              force.set_friend(force_2, allies)
+              force_2.set_cease_fire(force, allies)
+              force_2.set_friend(force, allies)
+            end
+          end
+        end
+      end
+      player.print({"command.hivemind-reset-all-forces"})
+    else
+      player.print({"command.admin-only", {"command.hivemind-reset-all-name"}})
     end
 
   else
