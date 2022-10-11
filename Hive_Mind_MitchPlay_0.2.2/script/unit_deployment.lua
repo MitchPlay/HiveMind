@@ -24,7 +24,7 @@ end
 
 local get_max_pop_count = function(force_index)
   if not data.max_pop_count[force_index] then
-    data.max_pop_count[force_index] = game.forces[force_index].technologies["popcap"].level * 10 + 20
+    data.max_pop_count[force_index] = game.forces[force_index].technologies["popcap"].level * 10 + 10
   end
   return data.max_pop_count[force_index]
 end
@@ -180,6 +180,8 @@ local check_spawner = function(spawner_data)
   local entity = spawner_data.entity
   if not (entity and entity.valid) then return true end
   --entity.surface.create_entity{name = "flying-text", position = entity.position, text = game.tick % 60}
+
+  entity.health = entity.health + 1
 
   local recipe = entity.get_recipe()
   if not recipe then

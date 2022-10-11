@@ -512,7 +512,7 @@ local check_hivemind_disband = function(force)
   local map = {}
   for name, entity in pairs (game.entity_prototypes) do
     if entity.type == "unit-spawner" then
-      map[name] = util.deployer_name(name)
+      map[util.deployer_name(name)] = name
     end
   end
 
@@ -605,7 +605,6 @@ leave_hive = function(player)
 
   game.print{"left-hive", player.name}
   check_hivemind_disband(hivemind_force)
-  log(hivemind_force.name)
 
 end
 

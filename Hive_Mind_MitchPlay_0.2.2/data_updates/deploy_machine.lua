@@ -58,6 +58,8 @@ local make_deployer = function(origin, name)
     machine.collision_mask = {"water-tile", "player-layer", "train-layer"}
     machine.order = graphics.order
     machine.healing_per_tick = graphics.healing_per_tick
+    machine.is_military_target = true
+    machine.resistances = graphics.resistances
 
     machine.open_sound =
     {

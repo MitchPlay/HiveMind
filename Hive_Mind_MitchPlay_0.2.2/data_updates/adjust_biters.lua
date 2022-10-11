@@ -333,7 +333,7 @@ end
 local turrets = data.raw.turret
 
 for name, turret in pairs (turrets) do
-  if turret.name:find("worm%-turret") and util.required_pollution(name, turret) then
+  if --[[turret.name:find("worm%-turret") and]] util.required_pollution(name, turret) then
     if dependency_list.worms[util.required_pollution(name, turret)] then
       table.insert(dependency_list.worms[util.required_pollution(name, turret)],turret.name)
     else

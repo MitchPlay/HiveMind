@@ -396,6 +396,7 @@ util.required_pollution = function(name, entity)
 
   evolution_factor = entity.build_base_evolution_requirement
   if not evolution_factor then evolution_factor = 0 end
+  if evolution_factor < 0 then evolution_factor = 0 end
   return util.evo_factor_to_pollution_cost(evolution_factor)
 end
 
