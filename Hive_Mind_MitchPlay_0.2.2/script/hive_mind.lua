@@ -405,7 +405,7 @@ join_hive = function(player)
     local hivemind_players = 0
     for _, force in pairs(game.forces) do
       if is_hivemind_force(force) then
-        for _, name in pairs(force.player) do
+        for _, name in pairs(force.players) do
           hivemind_players = 1 + hivemind_players
         end
       end
