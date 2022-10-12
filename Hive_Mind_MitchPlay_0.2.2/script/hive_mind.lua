@@ -206,8 +206,15 @@ local create_character = function(player)
     surface.force_generate_chunk_requests()
     for x = 0, (names.spawning_attempts_per_radius * 6 - 1), 1 do
       local shrinkage = (6 - math.floor(x/names.spawning_attempts_per_radius)) / 6
-      position = surface.find_non_colliding_position(name, random_spawn_location(surface, shrinkage), 64, 1)
-      if position then break end
+      position_1 = surface.find_non_colliding_position("hivemind-spawning-area", random_spawn_location(surface, shrinkage), 64, 1)
+      log(serpent.line(position_1))
+      log(serpent.line(game.entity_prototypes["hivemind-spawning-area"].collision_box))
+      if position_1 then
+        position = surface.find_non_colliding_position_in_box(name, {
+          {position_1.x + game.entity_prototypes["hivemind-spawning-area"].collision_box.left_top.x, position_1.y + game.entity_prototypes["hivemind-spawning-area"].collision_box.left_top.y},
+          {position_1.x + game.entity_prototypes["hivemind-spawning-area"].collision_box.right_bottom.x, position_1.y + game.entity_prototypes["hivemind-spawning-area"].collision_box.right_bottom.y}}, 1)
+      end
+      if position then break end 
     end
   end
   if not position then position = surface.find_non_colliding_position(name, origin, 64, 1) end
@@ -225,7 +232,7 @@ end
 
 local make_map_load = function()
   for _, surface in pairs(game.surfaces) do
-    for x = 0, 5, 1 do
+    for x = 0, 20, 1 do
       surface.request_to_generate_chunks(random_spawn_location(surface, 1), 1)
     end
   end

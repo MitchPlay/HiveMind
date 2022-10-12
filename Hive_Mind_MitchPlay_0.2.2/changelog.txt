@@ -12,6 +12,8 @@ Date: 2022-10-12
 		- hivemind people can no loner place something that is not yet researched.
     - deployers are now military targets
     - deployers now have the same resistances as the spawners they came from
+    - hivemind players spawn the correct distance and not on the edge of the known area
+    - hivemind players spawn atleas on a 40 by 40 tiles of land (cliffs are included in that space)
     - other minor issues
 ---------------------------------------------------------------------------------------------------
 

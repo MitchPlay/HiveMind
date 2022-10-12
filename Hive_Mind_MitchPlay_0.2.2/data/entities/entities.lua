@@ -4,6 +4,7 @@ require("biter_player")
 --require("deploy_machine/deploy_machine")
 require("pollution_proxy")
 require("creep_landmine")
+require("spawning_area")
 
 local entity_catagory =
 {
