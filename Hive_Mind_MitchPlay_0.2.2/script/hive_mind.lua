@@ -181,8 +181,8 @@ local characters =
   [names.players.small_biter_player] = 0
 }
 
-local random_spawn_location = function(player, shrinkage)
-  return util.radian_distance_to_x_y(math.random()*6.28, (math.random()*0.2+0.9)*settings.global["hivemind-spawning-distance"].value*player.surface.map_gen_settings.starting_area*shrinkage)
+local random_spawn_location = function(surface, shrinkage)
+  return util.radian_distance_to_x_y(math.random()*6.28, (math.random()*0.2+0.9)*settings.global["hivemind-spawning-distance"].value*surface.map_gen_settings.starting_area*shrinkage)
 end
 
 local create_character = function(player)
@@ -203,9 +203,10 @@ local create_character = function(player)
   if closest then
     position = surface.find_non_colliding_position(name, closest.position, 64, 1)
   else
+    surface.force_generate_chunk_requests()
     for x = 0, (names.spawning_attempts_per_radius * 6 - 1), 1 do
       local shrinkage = (6 - math.floor(x/names.spawning_attempts_per_radius)) / 6
-      position = surface.find_non_colliding_position(name, random_spawn_location(player, shrinkage), 64, 1)
+      position = surface.find_non_colliding_position(name, random_spawn_location(surface, shrinkage), 64, 1)
       if position then break end
     end
   end
@@ -221,6 +222,15 @@ local create_character = function(player)
   add_biter_light(player)
   return name
 end
+
+local make_map_load = function()
+  for _, surface in pairs(game.surfaces) do
+    for x = 0, 5, 1 do
+      surface.request_to_generate_chunks(random_spawn_location(surface, 1), 1)
+    end
+  end
+end
+
 
 local summon_starter_pack = function(player)
 
@@ -360,6 +370,11 @@ local gui_init = function(player)
   for name, action in pairs (actions) do
     if gui[name] then gui[name].destroy() end
   end
+
+  --on_player_changed_force --when players switch sides (done) + then the total hivemind players is below the count.
+  --on_player_created --when a new player joins (done)
+  --on_runtime_mod_setting_changed --for when the cooldown changes 
+  --on_tick --for the cooldown
 
   local element
   if is_hivemind_force(player.force) then
@@ -1190,6 +1205,7 @@ lib.on_init = function()
   set_map_settings()
   register_wave_defense()
   register_pvp()
+  make_map_load()
 end
 
 lib.on_load = function()
