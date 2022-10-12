@@ -1,6 +1,8 @@
 Version: 0.2.2
 Date: 2022-10-12
 
+   ~ Minor feature ~
+    - A text message tells you how far from spawn you have spawned
 
  	 ~ Mod Compatibility ~
    		 - now compatiable with enemy race manager
@@ -13,7 +15,7 @@ Date: 2022-10-12
     - deployers are now military targets
     - deployers now have the same resistances as the spawners they came from
     - hivemind players spawn the correct distance and not on the edge of the known area
-    - hivemind players spawn atleas on a 40 by 40 tiles of land (cliffs are included in that space)
+    - hivemind players spawn atleast on a 40 by 40 tiles of land (cliffs are included in that space)
     - other minor issues
 ---------------------------------------------------------------------------------------------------
 

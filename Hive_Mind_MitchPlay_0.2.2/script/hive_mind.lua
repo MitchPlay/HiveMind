@@ -182,7 +182,8 @@ local characters =
 }
 
 local random_spawn_location = function(surface, shrinkage)
-  return util.radian_distance_to_x_y(math.random()*6.28, (math.random()*0.2+0.9)*settings.global["hivemind-spawning-distance"].value*surface.map_gen_settings.starting_area*shrinkage)
+  local distance = (math.random() * 0.2 + 0.9) * settings.global["hivemind-spawning-distance"].value*surface.map_gen_settings.starting_area * shrinkage
+  return util.radian_distance_to_x_y(math.random()*6.28, distance), distance
 end
 
 local create_character = function(player)
@@ -200,21 +201,21 @@ local create_character = function(player)
   local origin = script_data.player_spawns[player.index] or {0,0}
   local closest = surface.get_closest(origin, surface.find_entities_filtered{force = player.force, type = "assembling-machine"})
   local position
+  local distance
   if closest then
     position = surface.find_non_colliding_position(name, closest.position, 64, 1)
   else
     surface.force_generate_chunk_requests()
     for x = 0, (names.spawning_attempts_per_radius * 6 - 1), 1 do
       local shrinkage = (6 - math.floor(x/names.spawning_attempts_per_radius)) / 6
-      position_1 = surface.find_non_colliding_position("hivemind-spawning-area", random_spawn_location(surface, shrinkage), 64, 1)
-      log(serpent.line(position_1))
-      log(serpent.line(game.entity_prototypes["hivemind-spawning-area"].collision_box))
+      local position_1, return_distance = random_spawn_location(surface, shrinkage)
+      position_1 = surface.find_non_colliding_position("hivemind-spawning-area", position_1, 64, 1)
       if position_1 then
         position = surface.find_non_colliding_position_in_box(name, {
           {position_1.x + game.entity_prototypes["hivemind-spawning-area"].collision_box.left_top.x, position_1.y + game.entity_prototypes["hivemind-spawning-area"].collision_box.left_top.y},
           {position_1.x + game.entity_prototypes["hivemind-spawning-area"].collision_box.right_bottom.x, position_1.y + game.entity_prototypes["hivemind-spawning-area"].collision_box.right_bottom.y}}, 1)
       end
-      if position then break end 
+      if position then distance = return_distance break end 
     end
   end
   if not position then position = surface.find_non_colliding_position(name, origin, 64, 1) end
@@ -227,7 +228,7 @@ local create_character = function(player)
   }
   reset_gun_inventory(player)
   add_biter_light(player)
-  return name
+  return name, distance
 end
 
 local make_map_load = function()
@@ -511,13 +512,14 @@ join_hive = function(player)
   player.force = force
   --convert_nest(player, spawner)
   --player.game_view_settings.show_controller_gui = false
-  create_character(player)
+  local _, distance = create_character(player)
   summon_starter_pack(player)
   player.color = {r = 255, g = 100, b = 100}
   player.chat_color = {r = 255, g = 100, b = 100}
   player.tag = "[color=255,100,100]HIVE[/color]"
   gui_init(player)
   game.print{"joined-hive", player.name}
+  if distance then player.print({"script-text.spawn-distance", math.floor(distance + 0.5)}) end
 end
 
 local check_hivemind_disband = function(force)
