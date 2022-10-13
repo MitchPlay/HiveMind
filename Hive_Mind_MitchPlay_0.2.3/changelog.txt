@@ -1,3 +1,15 @@
+Version: 0.2.3
+Date: 2022-10-xx
+   ~ Mayor feature ~
+    - deployers are the same size as the original spawners
+    - added research prod for the biters
+
+   ~ Minor feature ~
+    - fish are now nerfed
+
+ 	 ~ Mod Compatibility ~
+   	- now compatiable with a future version of RampantFixed
+---------------------------------------------------------------------------------------------------
 Version: 0.2.2
 Date: 2022-10-12
 

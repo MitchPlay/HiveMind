@@ -11,6 +11,15 @@ data:extend({
     },
     {
         type = "int-setting",
+        name = "hivemind-fish-heal-nerf",
+        localised_name = {"settings.hivemind-fish-heal-nerf"},
+        localised_description = {"settings.hivemind-fish-heal-nerf-description"},
+        setting_type = "startup",
+        minimum_value = 0,
+        default_value = 35
+    },
+    {
+        type = "int-setting",
         name = "hivemind-spawning-distance",
         localised_name = {"settings.hivemind-spawning-distance"},
         localised_description = {"settings.hivemind-spawning-distance-description"},

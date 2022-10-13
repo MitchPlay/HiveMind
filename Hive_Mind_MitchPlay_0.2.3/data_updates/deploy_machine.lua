@@ -56,6 +56,9 @@ local make_deployer = function(origin, name)
     machine.corpse = graphics.corpse
     --machine.dying_explosion = graphics.dying_explosion
     machine.collision_mask = {"water-tile", "player-layer", "train-layer"}
+    machine.collision_box = graphics.collision_box
+    machine.selection_box = graphics.selection_box
+    machine.hit_visualization_box = graphics.hit_visualization_box
     machine.order = graphics.order
     machine.healing_per_tick = graphics.healing_per_tick
     machine.is_military_target = true
@@ -95,6 +98,7 @@ local make_deployer = function(origin, name)
       }
     end
     machine.working_sound = graphics.working_sound
+
     machine.fluid_boxes =
     {
       {
@@ -103,7 +107,7 @@ local make_deployer = function(origin, name)
         pipe_covers = nil,
         base_area = 1,
         base_level = 1,
-        pipe_connections = {{ type= "output", position = {0, -3} }},
+        pipe_connections =  {{ type= "output", position = {0, machine.collision_box[1][2]-0.3} }},
       },
       off_when_no_fluid_recipe = false
     }

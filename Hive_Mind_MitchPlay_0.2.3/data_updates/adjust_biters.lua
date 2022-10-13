@@ -232,15 +232,15 @@ end
 
 local worm_ammo_category = util.ammo_category("worm-biological")
 
-local make_worm = function(turret)
-  if not util.required_pollution(turret.name, turret) then return end
+local make_worm = function(turret, pollution_cost)
+  if not pollution_cost then return end
   make_worm_item(turret)
-  make_worm_recipe(turret, worm_category, util.required_pollution(turret.name, turret) * shared.pollution_cost_multiplier)
-  make_unlock_technology(turret, util.required_pollution(turret.name, turret) * shared.pollution_cost_multiplier * 100)
+  make_worm_recipe(turret, worm_category, pollution_cost * shared.pollution_cost_multiplier)
+  make_unlock_technology(turret, pollution_cost * shared.pollution_cost_multiplier * 100)
   table.insert(turret.flags, "player-creation")
   turret.create_ghost_on_death = false
   turret.friendly_map_color = {b = 1, g = 0.5}
-  turret.localised_description = {"requires-pollution", util.required_pollution(turret.name, turret) * shared.pollution_cost_multiplier}
+  turret.localised_description = {"requires-pollution", pollution_cost * shared.pollution_cost_multiplier}
   turret.collision_mask = util.buildable_on_creep_collision_mask()
   if turret.attack_parameters.ammo_type.category == "biological" then
     turret.attack_parameters.ammo_type.category = worm_ammo_category
@@ -333,12 +333,13 @@ end
 local turrets = data.raw.turret
 
 for name, turret in pairs (turrets) do
-  if --[[turret.name:find("worm%-turret") and]] util.required_pollution(name, turret) then
-    if dependency_list.worms[util.required_pollution(name, turret)] then
-      table.insert(dependency_list.worms[util.required_pollution(name, turret)],turret.name)
+  local req_pollution_ammount = util.required_pollution(name, turret)
+  if --[[turret.name:find("worm%-turret") and]] req_pollution_ammount then
+    if dependency_list.worms[req_pollution_ammount] then
+      table.insert(dependency_list.worms[req_pollution_ammount],turret.name)
     else
-      dependency_list.worms[util.required_pollution(name, turret)] = {turret.name}
-      table.insert(pollution_values.worms, util.required_pollution(name, turret))
+      dependency_list.worms[req_pollution_ammount] = {turret.name}
+      table.insert(pollution_values.worms, req_pollution_ammount)
     end
   end
 end
@@ -352,7 +353,7 @@ range_worm_medium   = 30
 range_worm_big      = 38
 range_worm_behemoth = 48
 ]]
---Laser turret is 24, flamethrower is 30, so lets make behemoth 55 and scale the rest accordingly
+--Gun turret is 18, Laser turret is 24, flamethrower is 30, so lets make behemoth 55 and scale the rest accordingly
 
 turrets["small-worm-turret"].attack_parameters.range = 30
 turrets["medium-worm-turret"].attack_parameters.range = 35
@@ -381,7 +382,7 @@ turrets["behemoth-worm-turret"].collision_box = util.area({0,0}, 2)
 
 for index, pollution_cost in pairs(pollution_values.worms) do
   for index, worm in pairs(dependency_list.worms[pollution_cost]) do
-    make_worm(turrets[worm])
+    make_worm(turrets[worm], pollution_cost)
   end
 end
 
