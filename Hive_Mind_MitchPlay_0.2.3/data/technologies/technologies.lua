@@ -75,7 +75,7 @@ local make_tech = function(prototype, icons)
     prerequisites = names.needs_tech[prototype],
     unit =
     {
-      count_formula = names.required_pollution[prototype] * 10,
+      count_formula = names.required_pollution[prototype] * 7.5,
       ingredients =
       {
         {names.pollution_proxy, 1}
