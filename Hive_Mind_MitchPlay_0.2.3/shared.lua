@@ -36,7 +36,10 @@ data.pollution_mining_drill = "pollution-mining-drill"
 data.advanced_pollution_mining_drill = "advanced-pollution-mining-drill"
 data.pollution_oil_drill = "pollution-oil-drill"
 data.advanced_pollution_oil_drill = "advanced-pollution-oil-drill"
+data.pollution_tree = "pollution-tree"
 data.sticker_proxy = "sticker-proxy"
+
+
 data.unit_size_divider = 6 -- [pollution to attack] / [this number] rounded up is the space a single biter unit takes.
 
 data.required_pollution =
@@ -54,6 +57,7 @@ data.required_pollution =
   [data.advanced_pollution_mining_drill] = 1425,
   [data.pollution_oil_drill] = 1150,
   [data.advanced_pollution_oil_drill] = 3150,
+  [data.pollution_tree] = 1625,
   ["small-worm-turret"] = 200,
   ["medium-worm-turret"] = 400,
   ["big-worm-turret"] = 800,
@@ -90,6 +94,7 @@ data.needs_tech =
   [data.advanced_pollution_mining_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.creep_chest},
   [data.pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.creep_chest},
   [data.advanced_pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_oil_drill, "hivemind-unlock-"..data.advanced_pollution_mining_drill},
+  [data.pollution_tree] = {"hivemind-unlock-"..data.advanced_pollution_mining_drill},
 }
 
 data.needs_oponent_tech =
