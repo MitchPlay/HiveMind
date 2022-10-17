@@ -120,6 +120,31 @@ util.is_hivemind_force = function(force)
   return false
 end
 
+local hivemind_entity_list
+util.get_hivemind_entity_list = function()
+  if hivemind_entity_list then return hivemind_entity_list end
+  hivemind_entity_list = {}
+  local worm_list = ft_util.get_worm_order() or {}
+  local spawner_list = ft_util.get_spawner_list() or {}
+  local shared_list = names.required_pollution or {}
+  for _, name in worm_list do
+    if not hivemind_entity_list[name] then
+      hivemind_entity_list[name] = true
+    end
+  end
+  for _, name in spawner_list do
+    if not hivemind_entity_list[name] then
+      hivemind_entity_list[name] = true
+    end
+  end
+  for name, _ in shared_list do
+    if not hivemind_entity_list[name] then
+      hivemind_entity_list[name] = true
+    end
+  end
+  return hivemind_entity_list
+end
+
 local ft_util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
 util.needs_creep = ft_util.needs_creep
 util.required_pollution = ft_util.required_pollution

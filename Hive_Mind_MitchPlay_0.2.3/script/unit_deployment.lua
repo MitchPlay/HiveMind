@@ -91,7 +91,7 @@ local get_unit_sizes = function(name)
 end
 
 local can_spawn_units = function(force_index, name)
-  return (data.pop_count[force_index] + get_unit_sizes(name) <= get_max_pop_count(force_index))
+  return data.pop_count[force_index] + get_unit_sizes(name) <= get_max_pop_count(force_index)
 end
 
 local update_force_popcap_labels = function(force, caption)
@@ -491,15 +491,16 @@ local on_built_entity = function(event)
   if not (entity and entity.valid) then return end
 
   --make_proxy(entity)
-  if not util.is_hivemind_force(entity.force) then return end
 
   if (get_spawner_map()[entity.name]) then
     return spawner_built(entity)
   end
 
+  --if not util.is_hivemind_force(entity.force) then return end
+
   if entity.type == "entity-ghost" then
     local ghost_name = entity.ghost_name
-    if util.required_pollution(ghost_name, get_prototype(ghost_name)) then
+    if util.get_hivemind_entity_list()[ghost_name] then
       return spawner_ghost_built(entity, event.player_index)
     end
   end
