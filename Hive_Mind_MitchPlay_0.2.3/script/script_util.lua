@@ -120,6 +120,8 @@ util.is_hivemind_force = function(force)
   return false
 end
 
+local ft_util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
+
 local hivemind_entity_list
 util.get_hivemind_entity_list = function()
   if hivemind_entity_list then return hivemind_entity_list end
@@ -127,17 +129,17 @@ util.get_hivemind_entity_list = function()
   local worm_list = ft_util.get_worm_order() or {}
   local spawner_list = ft_util.get_spawner_list() or {}
   local shared_list = names.required_pollution or {}
-  for _, name in worm_list do
+  for _, name in pairs(worm_list) do
     if not hivemind_entity_list[name] then
       hivemind_entity_list[name] = true
     end
   end
-  for _, name in spawner_list do
+  for _, name in pairs(spawner_list) do
     if not hivemind_entity_list[name] then
       hivemind_entity_list[name] = true
     end
   end
-  for name, _ in shared_list do
+  for name, _ in pairs(shared_list) do
     if not hivemind_entity_list[name] then
       hivemind_entity_list[name] = true
     end
@@ -145,7 +147,6 @@ util.get_hivemind_entity_list = function()
   return hivemind_entity_list
 end
 
-local ft_util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
 util.needs_creep = ft_util.needs_creep
 util.required_pollution = ft_util.required_pollution
 util.evo_factor_to_pollution_cost = ft_util.evo_factor_to_pollution_cost
