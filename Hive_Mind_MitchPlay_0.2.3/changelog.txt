@@ -3,6 +3,7 @@ Date: 2022-10-xx
    ~ Mayor feature ~
     - deployers are the same size as the original spawners
     - added research prod for the biters
+    - deployers now spawn the biter they where making when they are killed by an enemy
 
    ~ Minor feature ~
     - fish are now nerfed

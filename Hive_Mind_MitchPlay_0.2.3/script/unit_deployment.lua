@@ -90,10 +90,6 @@ local get_unit_sizes = function(name)
   return unit_sizes[name]
 end
 
-local get_unit_size = function(name)
-  return get_unit_sizes(name)
-end
-
 local can_spawn_units = function(force_index, name)
   return (data.pop_count[force_index] + get_unit_sizes(name) <= get_max_pop_count(force_index))
 end
@@ -495,7 +491,7 @@ local on_built_entity = function(event)
   if not (entity and entity.valid) then return end
 
   --make_proxy(entity)
-  if not entity.force.name:find("hivemind") then return end
+  if not util.is_hivemind_force(entity.force) then return end
 
   if (get_spawner_map()[entity.name]) then
     return spawner_built(entity)
@@ -635,6 +631,21 @@ local on_research_finished = function(event)
   end
 end
 
+local on_entity_died = function(event)
+  local cause_force = event.force
+  local entity = event.entity
+  local force = entity.force
+  if not cause_force then return end
+  if force.get_friend(cause_force) then return end
+  if not get_spawner_map()[entity.name] then return end
+  local recipe = entity.get_recipe()
+  if not recipe then return end
+  local spawn_count = 2 + math.ceil(get_max_pop_count(force.index) * 0.1 / get_unit_sizes(recipe.name))
+  for x = 1, spawn_count, 1 do
+    deploy_unit(entity, get_prototype(recipe.name))
+  end
+end
+
 local events =
 {
   [defines.events.on_built_entity] = on_built_entity,
@@ -644,6 +655,7 @@ local events =
   [defines.events.on_tick] = on_tick,
   [defines.events.on_ai_command_completed] = on_ai_command_completed,
 
+  [defines.events.on_entity_died] = on_entity_died,
   [defines.events.on_research_finished] = on_research_finished
 }
 
@@ -683,7 +695,7 @@ unit_deployment.on_configuration_changed = function()
     local time_store = data.max_pop_count
     data.max_pop_count = {}
     for _, force in pairs(game.forces) do
-      if (force.name:find("hivemind")) then
+      if util.is_hivemind_force(force) then
         data.max_pop_count[force.index] = time_store
       end
     end

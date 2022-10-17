@@ -1,3 +1,4 @@
+local util = require("script/script_util")
 local names = require("shared")
 local mod_gui = require("mod-gui")
 
@@ -44,14 +45,10 @@ local is_hivemind_unlocked = function(force, tech)
   return false
 end
 
-local is_hivemind_force = function(force)
-  if (force.name:find("hivemind")) then return true end
-  return false
-end
 
 local reset_hivemind_technology = function(force, hivemind_only)
   if not hivemind_only then hivemind_only = false end
-  local is_hivemind = is_hivemind_force(force)
+  local is_hivemind = util.is_hivemind_force(force)
   if hivemind_only == false then
     for _, tech in pairs(force.technologies) do
       tech.enabled = (is_hivemind == is_hivemind_technology(tech)) and is_hivemind_unlocked(force, tech)
@@ -81,7 +78,7 @@ reset_hivemind_force = function(player)
 
   if player == "all" then
     for _, force in pairs(game.forces) do
-      if is_hivemind_force(force) then reset_hivemind_force(force.name) end
+      if util.is_hivemind_force(force) then reset_hivemind_force(force.name) end
     end
   end
 
@@ -106,7 +103,7 @@ reset_hivemind_force = function(player)
   --hivemind friends
   if not settings.global["hivemind-hostile-to-hivemind"].value then
     for _, forces in pairs(game.forces) do
-      if is_hivemind_force(forces) and forces ~= force then
+      if util.is_hivemind_force(forces) and forces ~= force then
         be_friends(force, forces)
       end
     end
@@ -385,7 +382,7 @@ local gui_init = function(player)
   --on_tick --for the cooldown
 
   local element
-  if is_hivemind_force(player.force) then
+  if util.is_hivemind_force(player.force) then
     element = leave_hive_button
   else
     element = join_hive_button
@@ -427,7 +424,7 @@ join_hive = function(player)
 
     local hivemind_players = 0
     for _, force in pairs(game.forces) do
-      if is_hivemind_force(force) then
+      if util.is_hivemind_force(force) then
         for _, name in pairs(force.players) do
           hivemind_players = 1 + hivemind_players
         end
@@ -524,7 +521,7 @@ end
 
 local check_hivemind_disband = function(force)
 
-  if not is_hivemind_force(force) then return end
+  if not util.is_hivemind_force(force) then return end
 
   if #force.players > 0 then
     --still players on this force, so its alright.
@@ -634,16 +631,13 @@ end
 
 local on_player_respawned = function(event)
   local player = game.get_player(event.player_index)
-  if not is_hivemind_force(player.force) then return end
+  if not util.is_hivemind_force(player.force) then return end
   player.character.destroy()
   create_character(player)
 
 end
 
-local on_tick = function(event)
-
-end
-
+  
 local pollution_values =
 {
   --wood = 1,
@@ -656,7 +650,7 @@ local on_player_mined_entity = function(event)
   if not (player and player.valid) then return end
   local force = player.force
 
-  if not (force and force.valid and is_hivemind_force(force)) then return end
+  if not (force and force.valid and util.is_hivemind_force(force)) then return end
 
   local entity = event.entity
   if not (entity and entity.valid) then return end
@@ -690,7 +684,7 @@ end
 
 local on_player_joined_game = function(event)
   local player = game.get_player(event.player_index)
-  if is_hivemind_force(player.force) then
+  if util.is_hivemind_force(player.force) then
     add_biter_light(player)
   end
   gui_init(player)
@@ -714,7 +708,7 @@ local on_marked_for_deconstruction = function(event)
   local player = game.get_player(event.player_index)
   if not player then return end
   local force = player.force
-  if not is_hivemind_force(force) then return end
+  if not util.is_hivemind_force(force) then return end
   local entity = event.entity
   if not (entity and entity.valid) then return end
   if entity.force == force then
@@ -744,7 +738,7 @@ local allowed_types =
 local on_player_cursor_stack_changed = function(event)
   local player = game.get_player(event.player_index)
   if not (player and player.valid) then return end
-  if not is_hivemind_force(player.force) then return end
+  if not util.is_hivemind_force(player.force) then return end
   local stack = player.cursor_stack
   if not stack.valid_for_read then return end
   if allowed_types[stack.type] then return end
@@ -757,28 +751,28 @@ end
 local on_player_gun_inventory_changed = function(event)
   local player = game.get_player(event.player_index)
   if not (player and player.valid) then return end
-  if not is_hivemind_force(player.force) then return end
+  if not util.is_hivemind_force(player.force) then return end
   reset_gun_inventory(player)
 end
 
 local on_player_ammo_inventory_changed = function(event)
   local player = game.get_player(event.player_index)
   if not (player and player.valid) then return end
-  if not is_hivemind_force(player.force) then return end
+  if not util.is_hivemind_force(player.force) then return end
   reset_gun_inventory(player)
 end
 
 local on_player_ammo_inventory_changed = function(event)
   local player = game.get_player(event.player_index)
   if not (player and player.valid) then return end
-  if not is_hivemind_force(player.force) then return end
+  if not util.is_hivemind_force(player.force) then return end
   reset_gun_inventory(player)
 end
 
 local on_player_armor_inventory_changed = function(event)
   local player = game.get_player(event.player_index)
   if not (player and player.valid) then return end
-  if not is_hivemind_force(player.force) then return end
+  if not util.is_hivemind_force(player.force) then return end
   if not player.character then return end
   local armor_inventory = player.get_inventory(defines.inventory.player_armor)
   armor_inventory.clear()
@@ -801,7 +795,7 @@ local allowed_gui_types =
 local on_gui_opened = function(event)
   if event.gui_type ~= defines.gui_type.entity then return end
   local player = game.get_player(event.player_index)
-  if not is_hivemind_force(player.force) then return end
+  if not util.is_hivemind_force(player.force) then return end
   local entity = event.entity
   if not (entity and entity.valid) then return end
   if not allowed_gui_types[entity.type] then
@@ -912,7 +906,7 @@ commands.add_command("hivemind", {"command.hivemind-help"}, function(command)
     local list_of_results = {}
     local result_type = "forces"
     for _, force in pairs(game.forces) do
-     if is_hivemind_force(force) then
+     if util.is_hivemind_force(force) then
       table.insert(list_of_results, force.name)
      end
     end
@@ -1138,13 +1132,13 @@ commands.add_command("hivemind", {"command.hivemind-help"}, function(command)
       elseif parameters[1] == "reset" or parameters[1] == "r" then
       
         if player.admin then
-          if is_hivemind_force(force) then
+          if util.is_hivemind_force(force) then
             for _, force_2 in pairs(game.forces) do
               if force ~= force_2 then
                 local allies = false
                 if force_2.name == "enemy" then
                   allies = settings.global["hivemind-hostile-to-enemies"].value
-                elseif is_hivemind_force(force_2) then
+                elseif util.is_hivemind_force(force_2) then
                   allies = settings.global["hivemind-hostile-to-hivemind"].value
                 end
                 force.set_cease_fire(force_2, allies)
@@ -1175,13 +1169,13 @@ commands.add_command("hivemind", {"command.hivemind-help"}, function(command)
     if player.admin then
 
       for _, force in pairs(game.forces) do
-        if is_hivemind_force(force) then
+        if util.is_hivemind_force(force) then
           for _, force_2 in pairs(game.forces) do
             if force ~= force_2 then
               local allies = false
               if force_2.name == "enemy" then
                 allies = settings.global["hivemind-hostile-to-enemies"].value
-              elseif is_hivemind_force(force_2) then
+              elseif util.is_hivemind_force(force_2) then
                 allies = settings.global["hivemind-hostile-to-hivemind"].value
               end
               force.set_cease_fire(force_2, allies)

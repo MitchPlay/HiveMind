@@ -115,6 +115,11 @@ util.radian_distance_to_x_y = function(radian, distance)
   return {math.sin(radian) * distance, math.cos(radian) * distance}
 end
 
+util.is_hivemind_force = function(force)
+  if (force.name:find("hivemind")) then return true end
+  return false
+end
+
 local ft_util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
 util.needs_creep = ft_util.needs_creep
 util.required_pollution = ft_util.required_pollution

@@ -94,7 +94,7 @@ data.needs_tech =
   [data.advanced_pollution_mining_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.creep_chest},
   [data.pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.creep_chest},
   [data.advanced_pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_oil_drill, "hivemind-unlock-"..data.advanced_pollution_mining_drill},
-  [data.pollution_tree] = {"hivemind-unlock-"..data.advanced_pollution_mining_drill},
+  [data.pollution_tree] = {"hivemind-unlock-"..data.creep_wall},
 }
 
 data.needs_oponent_tech =
