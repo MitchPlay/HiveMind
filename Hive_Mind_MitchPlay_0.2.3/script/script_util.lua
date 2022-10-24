@@ -135,8 +135,8 @@ util.get_hivemind_entity_list = function()
     end
   end
   for _, name in pairs(spawner_list) do
-    if not hivemind_entity_list[name] then
-      hivemind_entity_list[name] = true
+    if not hivemind_entity_list[ft_util.deployer_name(name)] then
+      hivemind_entity_list[ft_util.deployer_name(name)] = true
     end
   end
   for name, _ in pairs(shared_list) do

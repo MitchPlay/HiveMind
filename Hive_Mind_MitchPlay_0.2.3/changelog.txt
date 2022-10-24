@@ -1,5 +1,11 @@
 Version: 0.2.3
-Date: 2022-10-xx
+Date: 2022-10-24
+
+  ~ fixes ~
+    - modded deployers now can get build once more
+---------------------------------------------------------------------------------------------------
+Version: 0.2.3
+Date: 2022-10-xx20
    ~ Mayor feature ~
     - deployers are the same size as the original spawners
     - added research prod for the biters

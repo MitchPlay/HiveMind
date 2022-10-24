@@ -29,9 +29,6 @@ local get_max_pop_count = function(force_index)
   return data.max_pop_count[force_index]
 end
 
-local names = names.deployers
-local units = names.units
---todo allow other mods to add deployers
 local spawner_map
 local get_spawner_map = function()
   if spawner_map then return spawner_map end
