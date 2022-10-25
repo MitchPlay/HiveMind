@@ -39,9 +39,6 @@ data.advanced_pollution_oil_drill = "advanced-pollution-oil-drill"
 data.pollution_tree = "pollution-tree"
 data.sticker_proxy = "sticker-proxy"
 
-
-data.unit_size_divider = 6 -- [pollution to attack] / [this number] rounded up is the space a single biter unit takes.
-
 data.required_pollution =
 {
   [data.deployers.biter_deployer] = 100,

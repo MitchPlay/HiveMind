@@ -1,6 +1,10 @@
 Version: 0.2.4
 Date: 2022-10-25
 
+   ~ Minor feature ~
+    - added settings for configurable tech costs
+    - added settings to change the popcap techs effects per map
+
   ~ fixes ~
     - modded deployers now can get build once more
 

@@ -17,7 +17,7 @@ local make_damage_tech = function(category, icons)
     prerequisites = {},
     unit =
     {
-      count_formula = "2^(L-1)*1000",
+      count_formula = "2^(L-1)*"..math.ceil(1000*settings.startup["hivemind-tech-costs"].value),
       ingredients =
       {
         {names.pollution_proxy, 1}

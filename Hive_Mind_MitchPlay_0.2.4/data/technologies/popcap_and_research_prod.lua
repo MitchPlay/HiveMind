@@ -37,13 +37,12 @@ data:extend({
       {
         {
           type = "nothing",
-          effect_description = {"modifier-description.popcap_modifier"} 
         }
       },
       prerequisites = {},
       unit =
       {
-        count_formula = "L*1000",
+        count_formula = "L*"..math.ceil(1000*settings.startup["hivemind-tech-costs"].value),
         ingredients =
         {
           {names.pollution_proxy, 1}
@@ -72,7 +71,7 @@ data:extend({
         prerequisites = {},
         unit =
         {
-          count_formula = "500 * L^1.5",
+          count_formula = "L^(1.5) *"..math.ceil(500*settings.startup["hivemind-tech-costs"].value),
           ingredients =
           {
             {names.pollution_proxy, 1}

@@ -24,7 +24,7 @@ end
 
 local get_max_pop_count = function(force_index)
   if not data.max_pop_count[force_index] then
-    data.max_pop_count[force_index] = game.forces[force_index].technologies["popcap"].level * 10 + 10
+    data.max_pop_count[force_index] = game.forces[force_index].technologies["popcap"].level * settings.global["hivemind-increase-per-level"].value + settings.global["hivemind-starting-popcap"].value
   end
   return data.max_pop_count[force_index]
 end
@@ -82,7 +82,7 @@ local get_unit_sizes = function(name)
   if unit_sizes then return unit_sizes[name] end
   unit_sizes = {}
   for name, x in pairs(get_units()) do
-    unit_sizes[x] = math.ceil(game.entity_prototypes[x].pollution_to_join_attack / shared.unit_size_divider)
+    unit_sizes[x] = math.ceil(game.entity_prototypes[x].pollution_to_join_attack / settings.startup["hivemind-unit-size-devider"].value)
   end
   return unit_sizes[name]
 end
@@ -609,7 +609,7 @@ local on_research_finished = function(event)
 
   -- do the pop cap thingy
   if event.research.name:find("popcap") then
-    data.max_pop_count[event.research.force.index] =  get_max_pop_count(event.research.force.index) + 10
+    data.max_pop_count[event.research.force.index] =  get_max_pop_count(event.research.force.index) + settings.global["hivemind-increase-per-level"].value
   -- data.max_pop_count = event.research.level * 10 + 20
   end
 

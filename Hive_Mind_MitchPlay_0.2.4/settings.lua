@@ -10,6 +10,33 @@ data:extend({
         default_value = 0
     },
     {
+        type = "double-setting",
+        name = "hivemind-tech-costs",
+        localised_name = {"settings.hivemind-tech-costs"},
+        localised_description = {"settings.hivemind-tech-costs-description"},
+        setting_type = "startup",
+        minimum_value = 0.001,
+        default_value = 1
+    },
+    {
+        type = "double-setting",
+        name = "hivemind-tech-biter-costs",
+        localised_name = {"settings.hivemind-tech-biter-costs"},
+        localised_description = {"settings.hivemind-tech-biter-costs-description"},
+        setting_type = "startup",
+        minimum_value = 0.001,
+        default_value = 1
+    },
+    {
+        type = "double-setting",
+        name = "hivemind-tech-worm-costs",
+        localised_name = {"settings.hivemind-tech-worm-costs"},
+        localised_description = {"settings.hivemind-tech-worm-costs-description"},
+        setting_type = "startup",
+        minimum_value = 0.001,
+        default_value = 1
+    },
+    {
         type = "int-setting",
         name = "hivemind-fish-heal-nerf",
         localised_name = {"settings.hivemind-fish-heal-nerf"},
@@ -17,6 +44,33 @@ data:extend({
         setting_type = "startup",
         minimum_value = 0,
         default_value = 35
+    },
+    {
+        type = "double-setting",
+        name = "hivemind-unit-size-devider",
+        localised_name = {"settings.hivemind-unit-size-devider"},
+        localised_description = {"settings.hivemind-unit-size-devider-description"},
+        setting_type = "startup",
+        minimum_value = 0.1,
+        default_value = 6
+    },
+    {
+        type = "int-setting",
+        name = "hivemind-starting-popcap",
+        localised_name = {"settings.hivemind-starting-popcap"},
+        localised_description = {"settings.hivemind-starting-popcap-description"},
+        setting_type = "runtime-global",
+        minimum_value = 0,
+        default_value = 10
+    },
+    {
+        type = "int-setting",
+        name = "hivemind-increase-per-level",
+        localised_name = {"settings.hivemind-increase-per-level"},
+        localised_description = {"settings.hivemind-increase-per-level-description"},
+        setting_type = "runtime-global",
+        minimum_value = 0,
+        default_value = 10
     },
     {
         type = "int-setting",

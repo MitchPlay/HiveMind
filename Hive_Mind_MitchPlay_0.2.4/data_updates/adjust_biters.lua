@@ -135,7 +135,7 @@ local make_unlock_technology = function(prototype, cost, combined_deployer)
     },
     unit =
     {
-      count = cost,
+      count = math.ceil(cost),
       ingredients = {{names.pollution_proxy, 1}},
       time = 1
     },
@@ -211,10 +211,10 @@ local spitter_ammo_category = util.ammo_category("spitter-biological")
 local make_biter = function(biter, combined_deployer)
   biter.collision_mask = util.ground_unit_collision_mask()
   biter.radar_range = biter.radar_range or 2
-  biter.unit_size = math.ceil(biter.pollution_to_join_attack / shared.unit_size_divider)
+  biter.unit_size = math.ceil(biter.pollution_to_join_attack / settings.startup["hivemind-unit-size-devider"].value)
   make_biter_item(biter, deployer_recipe_catagories[biter.name])
   make_biter_recipe(biter, deployer_recipe_catagories[biter.name])
-  make_unlock_technology(biter, biter.pollution_to_join_attack * shared.pollution_cost_multiplier * 200, combined_deployer)
+  make_unlock_technology(biter, biter.pollution_to_join_attack * shared.pollution_cost_multiplier * 200 * settings.startup["hivemind-tech-biter-costs"].value, combined_deployer)
   biter.ai_settings = biter.ai_settings or {}
   biter.ai_settings.destroy_when_commands_fail = false
   biter.friendly_map_color = {b = 1, g = 1}
@@ -236,7 +236,7 @@ local make_worm = function(turret, pollution_cost)
   if not pollution_cost then return end
   make_worm_item(turret)
   make_worm_recipe(turret, worm_category, pollution_cost * shared.pollution_cost_multiplier)
-  make_unlock_technology(turret, pollution_cost * shared.pollution_cost_multiplier * 100)
+  make_unlock_technology(turret, pollution_cost * shared.pollution_cost_multiplier * 100 * settings.startup["hivemind-tech-worm-costs"].value)
   table.insert(turret.flags, "player-creation")
   turret.create_ghost_on_death = false
   turret.friendly_map_color = {b = 1, g = 0.5}
