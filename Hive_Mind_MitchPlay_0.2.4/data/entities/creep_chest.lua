@@ -39,6 +39,7 @@ drill.vehicle_impact_sound = spawner_graphics.vehicle_impact_sound
 drill.module_specification = nil
 drill.dying_explosion = spawner_graphics.dying_explosion
 drill.corpse = nil
+drill.next_upgrade = nil
 
 local subgroup =
 {

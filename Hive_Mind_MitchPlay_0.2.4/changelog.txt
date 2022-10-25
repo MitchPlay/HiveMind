@@ -1,8 +1,11 @@
 Version: 0.2.4
-Date: 2022-10-24
+Date: 2022-10-25
 
   ~ fixes ~
     - modded deployers now can get build once more
+
+ 	 ~ Mod Compatibility ~
+   	- now compatiable with bobs logistics
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.3
 Date: 2022-10-xx20
