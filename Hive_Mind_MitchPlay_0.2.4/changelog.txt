@@ -10,6 +10,7 @@ Date: 2022-10-25
 
  	 ~ Mod Compatibility ~
    	- now compatiable with bobs logistics
+    - now compatiable with space exploration
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.3
 Date: 2022-10-xx20
