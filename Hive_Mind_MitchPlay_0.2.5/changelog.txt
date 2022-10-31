@@ -1,3 +1,9 @@
+Version: 0.2.5
+Date: 2022-11-xx
+
+  ~ fixes ~
+    - biters no longer spawn when deconstructed by your own team
+---------------------------------------------------------------------------------------------------
 Version: 0.2.4
 Date: 2022-10-25
 
@@ -13,7 +19,7 @@ Date: 2022-10-25
     - now compatiable with space exploration
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.3
-Date: 2022-10-xx20
+Date: 2022-10-20
    ~ Mayor feature ~
     - deployers are the same size as the original spawners
     - added research prod for the biters
