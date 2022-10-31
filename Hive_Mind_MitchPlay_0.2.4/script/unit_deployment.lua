@@ -634,7 +634,7 @@ local on_entity_died = function(event)
   local entity = event.entity
   local force = entity.force
   if not cause_force then return end
-  if force.get_friend(cause_force) then return end
+  if force.get_friend(cause_force) or force == cause_force then return end
   if not get_spawner_map()[entity.name] then return end
   local recipe = entity.get_recipe()
   if not recipe then return end

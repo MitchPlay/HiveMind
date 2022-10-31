@@ -712,7 +712,7 @@ local on_marked_for_deconstruction = function(event)
   local entity = event.entity
   if not (entity and entity.valid) then return end
   if entity.force == force then
-    entity.die()
+    entity.die(force)
   end
 end
 
