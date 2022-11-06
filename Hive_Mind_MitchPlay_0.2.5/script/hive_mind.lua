@@ -774,7 +774,7 @@ local on_player_armor_inventory_changed = function(event)
   if not (player and player.valid) then return end
   if not util.is_hivemind_force(player.force) then return end
   if not player.character then return end
-  local armor_inventory = player.get_inventory(defines.inventory.player_armor)
+  local armor_inventory = player.get_inventory(defines.inventory.character_armor)
   armor_inventory.clear()
 end
 
