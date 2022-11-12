@@ -1,8 +1,9 @@
 Version: 0.2.5
-Date: 2022-11-xx
+Date: 2022-11-12
 
   ~ fixes ~
     - biters no longer spawn when deconstructed by your own team
+    - no crash when equiping armor as a biter
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.4
 Date: 2022-10-25
