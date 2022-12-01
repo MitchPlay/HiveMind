@@ -39,7 +39,7 @@ local make_biter_recipe = function(prototype, category)
   data:extend{recipe}
 end
 
-local prerequisites_finder = function(prototype, deployer)
+local prerequisites_finder = function(prototype, deployer, worm)
 
   
   local name = prototype.name
@@ -60,7 +60,8 @@ local prerequisites_finder = function(prototype, deployer)
     end
   end
 
-  if not name:find("worm") then
+  log(serpent.line(prototype))
+  if not worm then
     local subgroup = deployer_recipe_catagories[prototype.name]
     local pollution_values = pollution_values.deployers[subgroup]
     local dependency_list = dependency_list.deployers[subgroup]
@@ -110,7 +111,7 @@ local prerequisites_finder = function(prototype, deployer)
 end
 
 
-local make_unlock_technology = function(prototype, cost, combined_deployer)
+local make_unlock_technology = function(prototype, cost, combined_deployer, worm)
   if util.is_default_unlocked(prototype.name) then return end
   local unit
   if combined_deployer then
@@ -142,14 +143,14 @@ local make_unlock_technology = function(prototype, cost, combined_deployer)
     order = prototype.type..prototype.order..prototype.name
   }
   if unit then
-    tech.prerequisites = prerequisites_finder(unit, combined_deployer.name)
+    tech.prerequisites = prerequisites_finder(unit, combined_deployer.name, worm)
     table.insert(tech.effects,
     {
       type = "unlock-recipe",
       recipe = unit.name
     })
   else
-    tech.prerequisites = prerequisites_finder(prototype)
+    tech.prerequisites = prerequisites_finder(prototype, false, worm)
   end
 
   data:extend({tech})
@@ -236,7 +237,7 @@ local make_worm = function(turret, pollution_cost)
   if not pollution_cost then return end
   make_worm_item(turret)
   make_worm_recipe(turret, worm_category, pollution_cost * shared.pollution_cost_multiplier)
-  make_unlock_technology(turret, pollution_cost * shared.pollution_cost_multiplier * 100 * settings.startup["hivemind-tech-worm-costs"].value)
+  make_unlock_technology(turret, pollution_cost * shared.pollution_cost_multiplier * 100 * settings.startup["hivemind-tech-worm-costs"].value, false, true)
   table.insert(turret.flags, "player-creation")
   turret.create_ghost_on_death = false
   turret.friendly_map_color = {b = 1, g = 0.5}
@@ -306,6 +307,8 @@ for index, spawner in pairs(util.get_spawner_order()) do
     end
   end
 end
+
+log(serpent.line(dependency_list))
 
 local flags = {}
 for index, pollution_cost in pairs(pollution_values.biters) do
