@@ -2,6 +2,8 @@ local util = require("script/script_util")
 local names = require("shared")
 local mod_gui = require("mod-gui")
 
+remote.add_interface("unit-control-no-spawning",{["hivemind"] = util.get_deployer_order})
+
 local script_data =
 {
   player_lights = {},

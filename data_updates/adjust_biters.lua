@@ -60,7 +60,6 @@ local prerequisites_finder = function(prototype, deployer, worm)
     end
   end
 
-  log(serpent.line(prototype))
   if not worm then
     local subgroup = deployer_recipe_catagories[prototype.name]
     local pollution_values = pollution_values.deployers[subgroup]
@@ -307,8 +306,6 @@ for index, spawner in pairs(util.get_spawner_order()) do
     end
   end
 end
-
-log(serpent.line(dependency_list))
 
 local flags = {}
 for index, pollution_cost in pairs(pollution_values.biters) do
