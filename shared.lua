@@ -28,6 +28,7 @@ data.creep_radius = 10
 data.creep_sticker = "creep-sticker"
 data.creep_landmine = "creep-landmine"
 data.creep_wall = "creep-wall"
+data.creep_gate = "creep-gate"
 data.creep_chest = "creep-chest"
 data.creep_spreader = "creep-spreader"
 data.pollution_lab = "pollution-lab"
