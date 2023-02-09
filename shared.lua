@@ -48,6 +48,7 @@ data.required_pollution =
   [data.armored_creep_tumor] = 415,
   [data.creep_spreader] = 75,
   [data.creep_wall] = 115,
+  [data.creep_gate] = 150,
   [data.creep_chest] = 50,
   [data.pollution_lab] = 250,
   [data.pollution_burner_mining_drill] = 200,
@@ -86,6 +87,7 @@ data.needs_tech =
 {
   [data.creep_wall] = {},
   [data.armored_creep_tumor] = {"hivemind-unlock-"..data.creep_wall},
+  [data.creep_gate] = {"hivemind-unlock-"..data.creep_wall},
   [data.creep_spreader] = {"hivemind-unlock-"..data.creep_wall},
   [data.creep_chest] = {},
   [data.pollution_mining_drill] = {},

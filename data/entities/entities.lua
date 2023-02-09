@@ -5,6 +5,7 @@ require("biter_player")
 require("pollution_proxy")
 require("creep_landmine")
 require("spawning_area")
+require("creep_gate")
 
 local entity_catagory =
 {

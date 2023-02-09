@@ -220,6 +220,7 @@ local make_biter = function(biter, combined_deployer)
   biter.friendly_map_color = {b = 1, g = 1}
   biter.affected_by_tiles = biter.affected_by_tiles or true
   biter.localised_description = {"requires-pollution-unit", biter.pollution_to_join_attack * shared.pollution_cost_multiplier, biter.unit_size}
+  biter.can_open_gates = true
   --biter.corpse = nil
   biter.dying_explosion = nil
   if biter.attack_parameters.ammo_type.category == "melee" then
