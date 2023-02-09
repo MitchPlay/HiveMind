@@ -1,8 +1,11 @@
 Version: 0.2.7
 Date: 2023-0x-xx
 
+   ~ Minor feature ~
+    - added Chinese translations (Thanks Plexpt)
 
-
+ ~ fixes ~
+    - fixed an old bug where unit control spawns biters trough the Popcap. (If Unit Control accepts my update)
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.6
 Date: 2023-01-27
