@@ -17,48 +17,48 @@ local on_chunk_generated = function(event)
   for k, entity in pairs (surface.find_entities_filtered{type = "unit-spawner", area = area}) do
     local unit_number = entity.unit_number
     if not script_data.spreading_landmines[unit_number] then
-      local landmine = entity.surface.create_entity{name = names.creep_landmine, position = entity.position, force = entity.force}
+      local landmine = entity.surface.create_entity{name = names.blight_landmine, position = entity.position, force = entity.force}
       landmine.destructible = false
       script_data.spreading_landmines[unit_number] = {entity = landmine, radius = 1, type = entity.name} -- holy hell I forgot to put 'type =' before my new field and it lagged tf outta the game but still ran and idk
     end
   end
 end
 
-local creep_spread_map
-local get_creep_spread_map = function()
-  if creep_spread_map then return creep_spread_map end
-  creep_spread_map =
+local blight_spread_map
+local get_blight_spread_map = function()
+  if blight_spread_map then return blight_spread_map end
+  blight_spread_map =
   {
     --["biter-deployer"] = true, -- not needed because they are generated later
     --["spitter-deployer"] = true,
     --["biter-spawner"] = true,
     --["spitter-spawner"] = true,
-    ["creep-spreader"] = 15, -- bools replaced with ints
-    ["advanced-creep-spreader"] = 30,
-    ["creep-tumor"] = 10,
-    ["armored-creep-tumor"] = 15,
-    ["creep-wall"] = 2,
-    ["creep-gate"] = 2
+    ["blight-spreader"] = 15, -- bools replaced with ints
+    ["advanced-blight-spreader"] = 30,
+    ["blight-tumor"] = 10,
+    ["armored-blight-tumor"] = 15,
+    ["blight-wall"] = 2,
+    ["blight-gate"] = 2
   }
   for index, name in pairs(util.get_spawner_order()) do -- spawners/deployers added to map from here
-    creep_spread_map[name] = 10
-    creep_spread_map[util.deployer_name(name)] = 10
+    blight_spread_map[name] = 10
+    blight_spread_map[util.deployer_name(name)] = 10
   end
 
-  for index, name in pairs(util.get_worm_order()) do -- spawners/deployers added to map from here
-    creep_spread_map[name] = 4
+  for index, name in pairs(util.get_worm_order()) do -- worms added to map from here
+    blight_spread_map[name] = 4
   end
-  return creep_spread_map
+  return blight_spread_map
 end
 
-local creep_spread_list
-local get_creep_spread_list = function()
-  if creep_spread_list then return creep_spread_list end
-  creep_spread_list = {}
-  for name, bool in pairs (get_creep_spread_map()) do
-    table.insert(creep_spread_list, name)
+local blight_spread_list
+local get_blight_spread_list = function()
+  if blight_spread_list then return blight_spread_list end
+  blight_spread_list = {}
+  for name, bool in pairs (get_blight_spread_map()) do
+    table.insert(blight_spread_list, name)
   end
-  return creep_spread_list
+  return blight_spread_list
 end
 
 local shuffle_table = function(table)
@@ -76,10 +76,10 @@ local on_built_entity = function(event)
   local entity = event.created_entity or event.entity
   if not (entity and entity.valid) then return end
 
-  if get_creep_spread_map()[entity.name] and get_creep_spread_map()[entity.name] > 0 then -- checks if entity is a number and true
+  if get_blight_spread_map()[entity.name] and get_blight_spread_map()[entity.name] > 0 then -- checks if entity is a number and true
     local unit_number = entity.unit_number
     if not script_data.spreading_landmines[unit_number] then
-      local landmine = entity.surface.create_entity{name = names.creep_landmine, position = entity.position, force = entity.force}
+      local landmine = entity.surface.create_entity{name = names.blight_landmine, position = entity.position, force = entity.force}
       landmine.destructible = false
       script_data.spreading_landmines[unit_number] = {entity = landmine, radius = 1, type = entity.name} -- added new variable 'type' which is what entity the landmine represents
     end
@@ -87,8 +87,8 @@ local on_built_entity = function(event)
 
 end
 
---local max_radius = names.creep_radius -- changed to dynamic value
-local creep_spread_update_rate = 84
+--local max_radius = names.blight_radius -- changed to dynamic value
+local blight_spread_update_rate = 84
 local get_area = util.area
 local distance = util.distance
 local insert = table.insert
@@ -116,8 +116,8 @@ end
 
 local root_2 = 2 ^ 0.5
 
-local spread_creep
-spread_creep = function(unit_number, spawner_data)
+local spread_blight
+spread_blight = function(unit_number, spawner_data)
 
   local spawner = spawner_data.entity
 
@@ -132,7 +132,7 @@ spread_creep = function(unit_number, spawner_data)
   local tiles = spawner_data.tiles
   local radius = spawner_data.radius
   local max_radius = 0
-  if(get_creep_spread_map()[spawner_data.type]) then max_radius = get_creep_spread_map()[spawner_data.type] end -- this is the secret sauce of dynamic creep sizes
+  if(get_blight_spread_map()[spawner_data.type]) then max_radius = get_blight_spread_map()[spawner_data.type] end -- this is the secret sauce of dynamic blight sizes
 
   if not tiles then
 
@@ -153,7 +153,7 @@ spread_creep = function(unit_number, spawner_data)
 
   for k, tile in pairs (tiles) do
     tiles[k] = nil
-    if tile.valid and (tile.name ~= names.creep) and (tile.name ~= "out-of-map") then
+    if tile.valid and (tile.name ~= names.blight) and (tile.name ~= "out-of-map") then
       tile_to_set = tile
       break
     end
@@ -161,25 +161,25 @@ spread_creep = function(unit_number, spawner_data)
 
   if not tile_to_set then
     spawner_data.tiles = nil
-    return spread_creep(unit_number, spawner_data)
+    return spread_blight(unit_number, spawner_data)
   end
 
-  return register_to_set_tiles(surface, {position = tile_to_set.position, name = "creep"})
+  return register_to_set_tiles(surface, {position = tile_to_set.position, name = "blight"})
 
 end
 
-local check_creep_spread = function(event)
-  local mod = event.tick % creep_spread_update_rate
+local check_blight_spread = function(event)
+  local mod = event.tick % blight_spread_update_rate
   for unit_number, spawner_data in pairs (script_data.spreading_landmines) do
-    if (unit_number % creep_spread_update_rate) == mod then
-      spread_creep(unit_number, spawner_data)
+    if (unit_number % blight_spread_update_rate) == mod then
+      spread_blight(unit_number, spawner_data)
     end
   end
 end
 
-local creep_unspread_update_rate = 64
-local unspread_creep
-unspread_creep = function(unit_number, landmine_data)
+local blight_unspread_update_rate = 64
+local unspread_blight
+unspread_blight = function(unit_number, landmine_data)
 
   local landmine = landmine_data.entity
   local shrinking_landmines = script_data.shrinking_landmines
@@ -188,7 +188,7 @@ unspread_creep = function(unit_number, landmine_data)
     return
   end
   local max_radius = 0
-  if(get_creep_spread_map()[landmine.type]) then max_radius = get_creep_spread_map()[landmine_data.type] end
+  if(get_blight_spread_map()[landmine.type]) then max_radius = get_blight_spread_map()[landmine_data.type] end
 
 
   --tiles are shuffled when we create find them.
@@ -210,7 +210,7 @@ unspread_creep = function(unit_number, landmine_data)
     local new_radius = radius - root_2
 
     local position = landmine.position
-    tiles = shuffle_table(surface.find_tiles_filtered{position = position, radius = radius, name = names.creep})
+    tiles = shuffle_table(surface.find_tiles_filtered{position = position, radius = radius, name = names.blight})
     for k, tile in pairs (tiles) do
       local tile_position = tile.position
       local tile_distance = distance(tile_position, position)
@@ -222,7 +222,7 @@ unspread_creep = function(unit_number, landmine_data)
     landmine_data.tiles = tiles
   end
 
-  local nearby_shrinking_landmines = surface.find_entities_filtered{name = names.creep_landmine, position = landmine.position, radius = max_radius * 2}
+  local nearby_shrinking_landmines = surface.find_entities_filtered{name = names.blight_landmine, position = landmine.position, radius = max_radius * 2}
   local nearby_active_landmines = {}
   local any_active = false
   for k, v in pairs (nearby_shrinking_landmines) do
@@ -235,33 +235,33 @@ unspread_creep = function(unit_number, landmine_data)
 
   local get_closest = surface.get_closest
 
-  local creep_to_remove
+  local blight_to_remove
 
   for k, tile in pairs (tiles) do
     tiles[k] = nil
     local position = tile.position
-    if tile.name == names.creep and get_closest(position, nearby_shrinking_landmines) == landmine
+    if tile.name == names.blight and get_closest(position, nearby_shrinking_landmines) == landmine
       and (not any_active or distance(position, get_closest(position, nearby_active_landmines).position) > max_radius) then
-      creep_to_remove = tile
+      blight_to_remove = tile
       break
     end
   end
 
-  if not creep_to_remove then
+  if not blight_to_remove then
     landmine_data.tiles = nil
-    return unspread_creep(unit_number, landmine_data)
+    return unspread_blight(unit_number, landmine_data)
   end
 
-  register_to_set_tiles(surface, {position = creep_to_remove.position, name = creep_to_remove.hidden_tile or "out-of-map"})
+  register_to_set_tiles(surface, {position = blight_to_remove.position, name = blight_to_remove.hidden_tile or "out-of-map"})
 
 end
 
-local check_creep_unspread = function(event)
+local check_blight_unspread = function(event)
 
-  local mod = event.tick % creep_unspread_update_rate
+  local mod = event.tick % blight_unspread_update_rate
   for unit_number, landmine_data in pairs (script_data.shrinking_landmines) do
-    if (unit_number % creep_unspread_update_rate) == mod then
-      unspread_creep(unit_number, landmine_data)
+    if (unit_number % blight_unspread_update_rate) == mod then
+      unspread_blight(unit_number, landmine_data)
     end
   end
 
@@ -280,8 +280,8 @@ local check_set_tile_register = function()
 end
 
 local on_tick = function(event)
-  check_creep_spread(event)
-  check_creep_unspread(event)
+  check_blight_spread(event)
+  check_blight_unspread(event)
   check_set_tile_register()
 end
 
@@ -291,10 +291,10 @@ local on_trigger_created_entity = function(event)
   local entity = event.entity
   if not (entity and entity.valid) then return end
 
-  if entity.name ~= names.creep_sticker then return end
+  if entity.name ~= names.blight_sticker then return end
 
   local tile = entity.surface.get_tile(entity.position)
-  if tile.name == names.creep then return end
+  if tile.name == names.blight then return end
 
   entity.destroy()
 
@@ -305,7 +305,7 @@ local on_entity_died = function(event)
   local entity = event.entity
   if not (entity and entity.valid) then return end
   local max_radius = 10
-  if(get_creep_spread_map()[entity.name]) then max_radius = get_creep_spread_map()[entity.name] end
+  if(get_blight_spread_map()[entity.name]) then max_radius = get_blight_spread_map()[entity.name] end
   local unit_number = entity.unit_number
   local landmine_data = script_data.idle_landmines[unit_number] or script_data.spreading_landmines[unit_number]
   if not landmine_data then return end
@@ -313,13 +313,13 @@ local on_entity_died = function(event)
   script_data.idle_landmines[unit_number] = nil
   script_data.spreading_landmines[unit_number] = nil
 
-  local creep_landmine = landmine_data.entity
-  if not (creep_landmine and creep_landmine.valid) then return end
+  local blight_landmine = landmine_data.entity
+  if not (blight_landmine and blight_landmine.valid) then return end
 
-  --We need to notify nearby shrinking ones to reexpand their radius, as they may have already checked the nearby tiles and determined they should be left as creep.
+  --We need to notify nearby shrinking ones to reexpand their radius, as they may have already checked the nearby tiles and determined they should be left as blight.
   local shrinking_landmines = script_data.shrinking_landmines
 
-  local nearby_shrinking_landmines = creep_landmine.surface.find_entities_filtered{name = names.creep_landmine, position = creep_landmine.position, radius = max_radius * 2}
+  local nearby_shrinking_landmines = blight_landmine.surface.find_entities_filtered{name = names.blight_landmine, position = blight_landmine.position, radius = max_radius * 2}
   for k, v in pairs (nearby_shrinking_landmines) do
     local nearby_data = shrinking_landmines[v.unit_number]
     if nearby_data then
@@ -328,7 +328,7 @@ local on_entity_died = function(event)
   end
 
   landmine_data.radius = max_radius + root_2
-  shrinking_landmines[creep_landmine.unit_number] = landmine_data
+  shrinking_landmines[blight_landmine.unit_number] = landmine_data
 end
 
 local events =
@@ -349,23 +349,23 @@ local lib = {}
 lib.get_events = function() return events end
 
 lib.on_init = function()
-  global.creep = global.creep or script_data
+  global.blight = global.blight or script_data
   for k, surface in pairs (game.surfaces) do
-    for k, v in pairs (surface.find_entities_filtered{name = get_creep_spread_list()}) do
+    for k, v in pairs (surface.find_entities_filtered{name = get_blight_spread_list()}) do
       on_built_entity({entity = v})
     end
   end
 end
 
 lib.on_load = function()
-  script_data = global.creep or script_data
+  script_data = global.blight or script_data
 end
 
 lib.on_configuration_changed = function()
-  if global.creep then return end
-  global.creep = script_data
+  if global.blight then return end
+  global.blight = script_data
   for k, surface in pairs (game.surfaces) do
-    for k, v in pairs (surface.find_entities_filtered{name = get_creep_spread_list()}) do
+    for k, v in pairs (surface.find_entities_filtered{name = get_blight_spread_list()}) do
       on_built_entity({entity = v})
     end
   end
