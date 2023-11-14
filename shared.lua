@@ -24,7 +24,6 @@ data.firestarter_ammo = "firestarter-ammo"
 data.creep = "creep"
 data.creep_tumor = "creep-tumor"
 data.armored_creep_tumor = "armored-creep-tumor"
-data.creep_radius = 10
 data.creep_sticker = "creep-sticker"
 data.creep_landmine = "creep-landmine"
 data.creep_wall = "creep-wall"
@@ -38,6 +37,12 @@ data.pollution_oil_drill = "pollution-oil-drill"
 data.advanced_pollution_oil_drill = "advanced-pollution-oil-drill"
 data.pollution_tree = "pollution-tree"
 data.sticker_proxy = "sticker-proxy"
+
+data.creep_radius = {
+  default = 9,
+  [data.creep_spreader] = 14
+}
+
 
 data.required_pollution =
 {

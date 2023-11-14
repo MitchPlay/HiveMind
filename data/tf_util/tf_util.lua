@@ -568,5 +568,15 @@ util.get_propper_repeat_counts = function(num_list)
   return lcm
 end
 
+util.biggest_creep_radius = function ()
+  local biggest_radius = shared.creep_radius.default
+  for _, distance in pairs(shared.creep_radius) do
+    if biggest_radius < distance then
+      biggest_radius = distance
+    end
+  end
+  return biggest_radius
+end
+
 
 return util

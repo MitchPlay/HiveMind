@@ -154,5 +154,6 @@ util.get_spawner_order = ft_util.get_spawner_order
 util.get_deployer_order = ft_util.get_deployer_order
 util.get_worm_order = ft_util.get_worm_order
 util.get_spawner_list = ft_util.get_spawner_list
+util.biggest_creep_radius = ft_util.biggest_creep_radius
 
 return util

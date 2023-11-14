@@ -26,7 +26,7 @@ local landmine =
   --dying_explosion = "explosion-hit",
   picture_safe = util.empty_sprite(),
   picture_set = util.empty_sprite(),
-  trigger_radius = names.creep_radius + 1,
+  trigger_radius = util.biggest_creep_radius() + 1,
   force_die_on_attack = false,
   ammo_category = "landmine",
   order = "noob",
@@ -44,7 +44,7 @@ local landmine =
           action =
           {
             type = "area",
-            radius = names.creep_radius + 1,
+            radius = util.biggest_creep_radius() + 1,
             force = "enemy",
             collision_mask = {"player-layer"},
             action_delivery =
