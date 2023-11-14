@@ -21,16 +21,16 @@ data.pollution_proxy = "pollution-proxy"
 data.firestarter_gun = "firestarter-gun"
 data.firestarter_ammo = "firestarter-ammo"
 
-data.creep = "creep"
-data.creep_tumor = "creep-tumor"
-data.armored_creep_tumor = "armored-creep-tumor"
-data.creep_radius = 10
-data.creep_sticker = "creep-sticker"
-data.creep_landmine = "creep-landmine"
-data.creep_wall = "creep-wall"
-data.creep_gate = "creep-gate"
-data.creep_chest = "creep-chest"
-data.creep_spreader = "creep-spreader"
+data.blight = "blight"
+data.blight_tumor = "blight-tumor"
+data.armored_blight_tumor = "armored-blight-tumor"
+data.blight_radius = 10
+data.blight_sticker = "blight-sticker"
+data.blight_landmine = "blight-landmine"
+data.blight_wall = "blight-wall"
+data.blight_gate = "blight-gate"
+data.blight_chest = "blight-chest"
+data.blight_spreader = "blight-spreader"
 data.pollution_lab = "pollution-lab"
 data.pollution_burner_mining_drill = "pollution-burner-mining-drill"
 data.pollution_mining_drill = "pollution-mining-drill"
@@ -44,12 +44,12 @@ data.required_pollution =
 {
   [data.deployers.biter_deployer] = 100,
   [data.deployers.spitter_deployer] = 200,
-  [data.creep_tumor] = 50,
-  [data.armored_creep_tumor] = 415,
-  [data.creep_spreader] = 75,
-  [data.creep_wall] = 115,
-  [data.creep_gate] = 150,
-  [data.creep_chest] = 50,
+  [data.blight_tumor] = 50,
+  [data.armored_blight_tumor] = 415,
+  [data.blight_spreader] = 75,
+  [data.blight_wall] = 35,
+  [data.blight_gate] = 75,
+  [data.blight_chest] = 50,
   [data.pollution_lab] = 250,
   [data.pollution_burner_mining_drill] = 200,
   [data.pollution_mining_drill] = 415,
@@ -85,37 +85,38 @@ data.default_unlocked =
 
 data.needs_tech =
 {
-  [data.creep_wall] = {},
-  [data.armored_creep_tumor] = {"hivemind-unlock-"..data.creep_wall},
-  [data.creep_gate] = {"hivemind-unlock-"..data.creep_wall},
-  [data.creep_spreader] = {"hivemind-unlock-"..data.creep_wall},
-  [data.creep_chest] = {},
+  [data.blight_wall] = {},
+  [data.armored_blight_tumor] = {"hivemind-unlock-"..data.blight_wall},
+  [data.blight_gate] = {"hivemind-unlock-"..data.blight_wall},
+  [data.blight_spreader] = {"hivemind-unlock-"..data.blight_wall},
+  [data.blight_chest] = {},
   [data.pollution_mining_drill] = {},
-  [data.advanced_pollution_mining_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.creep_chest},
-  [data.pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.creep_chest},
+  [data.advanced_pollution_mining_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.blight_chest},
+  [data.pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_mining_drill, "hivemind-unlock-"..data.blight_chest},
   [data.advanced_pollution_oil_drill] = {"hivemind-unlock-"..data.pollution_oil_drill, "hivemind-unlock-"..data.advanced_pollution_mining_drill},
-  [data.pollution_tree] = {"hivemind-unlock-"..data.creep_wall},
+  [data.pollution_tree] = {"hivemind-unlock-"..data.blight_wall},
 }
 
 data.needs_oponent_tech =
 {
   --hivemind = {
-  --  ["hivemind-unlock-"..data.creep_wall] = {"stone-wall"},
+  --  ["hivemind-unlock-"..data.blight_wall] = {"stone-wall"},
   --  ["hivemind-unlock-"..data.pollution_oil_drill] = {"oil-processing"},
   --  ["hivemind-unlock-"..data.advanced_pollution_oil_drill] = {"advanced-oil-processing"},
   --  ["hivemind-unlock-"..data.advanced_pollution_mining_drill] = {"mining-productivity-1"}
   --}
 }
 
-data.needs_creep =
+data.needs_blight =
 {
+  ["blight-wall"] =true,
+  ["blight-gate"] =true,
   ["small-worm-turret"] =true,
   ["medium-worm-turret"] = true,
   ["big-worm-turret"] = true,
   ["behemoth-worm-turret"] = true,
-  [data.creep_tumor] = true,
-  [data.creep_wall] = true,
-  [data.armored_creep_tumor] = true,
+  [data.blight_tumor] = true,
+  [data.armored_blight_tumor] = true,
   [data.pollution_mining_drill] = true,
   [data.advanced_pollution_mining_drill] = true,
   [data.pollution_burner_mining_drill] = true,

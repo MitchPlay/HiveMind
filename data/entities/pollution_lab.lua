@@ -120,7 +120,7 @@ local lab =
   dying_explosion = spawner_graphics.dying_explosion,
   collision_box = util.area({0,0}, 3),
   selection_box = util.area({0,0}, 3),
-  collision_mask = util.buildable_on_creep_collision_mask(),
+  collision_mask = util.buildable_on_blight_collision_mask(),
   light = {intensity = 1, size = 20, color = tint},
   on_animation = on_animation,
   off_animation = off_animation,

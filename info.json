@@ -1,11 +1,11 @@
 {
   "name": "Hive_Mind_MitchPlay",
-  "version": "0.2.7",
-  "title": "Hive Mind MitchPlay: Default",
-  "author": "MitchPlay (design), CosmicWolf (development)",
+  "version": "0.3.0",
+  "title": "Hive Mind MitchPlay: Beta",
+  "author": "MitchPlay (design), CosmicWolf (development), Your1stCormade (development)",
   "contact": "",
   "homepage": "",
-  "description": "Original Hive Mind mod created by Klonan, Re-made by Mitchplay and CosmicWolf. \n\nTake control of the Biters, defend your home planet from the foreign invaders, The Engineers! Build Spawners and influence a pollution based economy, and lead yourself to Victory! \n\n2 versions of the MitchPlay's Ramake are available, Default & Mayhem\n\n--This download version: Default--\n\n(Default = Max Alien population is 1000 -This version is recommended)\n\n--MitchPlay Discord: https://discord.gg/rhPXFdJmE9\n\nThank you again Klonan for allowing me to remake this mod!",
+  "description": "Original Hive Mind mod created by Klonan, Re-made by Mitchplay, CosmicWolf and Your1stCormade. \n\nTake control of the Biters, defend your home planet from the foreign invaders, The Engineers! Build Spawners and influence a pollution based economy, and lead yourself to Victory! \n\n2 versions of the MitchPlay's Ramake are available, Default & Mayhem\n\n--This download version: Default--\n\n(Default = Max Alien population is 1000 -This version is recommended)\n\n--MitchPlay Discord: https://discord.gg/rhPXFdJmE9\n\nThank you again Klonan for allowing me to remake this mod!",
   "dependencies": [
     "base >= 1.1.46",
     "Unit_Control >= 0.3.0",

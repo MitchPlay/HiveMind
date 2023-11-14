@@ -1,14 +1,13 @@
-local name = names.advanced_pollution_oil_drill
+local name = names.blight_gate
 
-local drill = util.copy(data.raw["mining-drill"]["pumpjack"])
+local drill = util.copy(data.raw["gate"]["gate"])
 local spawner_graphics = util.copy(data.raw["unit-spawner"]["biter-spawner"])
-local tint = {r = 1, b = 1, g = 0.2}
-util.recursive_hack_scale(spawner_graphics, 0.70)
+local tint = {r = 0.9, b = 0.8}
+util.recursive_hack_scale(spawner_graphics, 0.75)
 util.recursive_hack_make_hr(spawner_graphics)
 util.recursive_hack_tint(spawner_graphics, tint)
 
 util.recursive_hack_make_hr(drill)
---util.recursive_hack_scale(drill, 3/2)
 util.recursive_hack_tint(drill, tint)
 
 drill.icons =
@@ -27,28 +26,25 @@ drill.icons =
 drill.icon = nil
 drill.name = name
 drill.localised_name = {name}
-drill.order = "b-b"
-drill.collision_box = util.area({0,0}, 1.01)
-drill.selection_box = util.area({0,0}, 1.5)
-drill.max_health = 750
-drill.mining_speed = 0
-drill.energy_source = {type = "void", emissions_per_minute = 225}
-drill.resource_searching_radius = 0.5
-drill.collision_mask = util.buildable_on_blight_collision_mask()
-drill.resource_categories = {"basic-fluid"}
-drill.vector_to_place_result = {0, 0}
-drill.output_fluid_box = nil
+drill.order = "noob"
+drill.max_health = 115
+collision_box = {{-0.48, -0.48}, {0.48, 0.48}}
+drill.selection_box = {{-0.5, -0.5}, {0.5, 0.5}}
+--drill.energy_source = {type = "void", emissions_per_minute = 1}
+drill.collision_mask = {"player-layer"}
 drill.base_picture = spawner_graphics.animations[4]
-drill.working_sound = spawner_graphics.working_sound
+drill.working_sound = nil
 drill.vehicle_impact_sound = spawner_graphics.vehicle_impact_sound
 drill.module_specification = nil
 drill.dying_explosion = spawner_graphics.dying_explosion
 drill.corpse = nil
+drill.next_upgrade = nil
+--drill.type = "wall"
 
 local subgroup =
 {
   type = "item-subgroup",
-  name = "oil-pollution-drill-subgroup",
+  name = "base-subgroup",
   group = "enemies",
   order = "b"
 }

@@ -2,7 +2,7 @@ names = require("shared")
 
 require("data/entities/entities")
 require("data/technologies/technologies")
-require("data/tiles/creep")
+require("data/tiles/blight")
 require("data/nerfs/nerfs")
 
 if se_prodecural_tech_exclusions then 
