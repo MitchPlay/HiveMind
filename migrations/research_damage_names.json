@@ -1,0 +1,10 @@
+
+
+{
+    "technology":
+    [
+        ["biter-melee-damage-1", "biter-melee-damage"],
+        ["spitter-biological-damage-1", "spitter-biological-damage"],
+        ["worm-biological-damage-1", "worm-biological-damage"]
+    ]
+}
