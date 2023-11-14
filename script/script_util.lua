@@ -147,7 +147,7 @@ util.get_hivemind_entity_list = function()
   return hivemind_entity_list
 end
 
-util.needs_creep = ft_util.needs_creep
+util.needs_blight = ft_util.needs_blight
 util.required_pollution = ft_util.required_pollution
 util.evo_factor_to_pollution_cost = ft_util.evo_factor_to_pollution_cost
 util.get_spawner_order = ft_util.get_spawner_order

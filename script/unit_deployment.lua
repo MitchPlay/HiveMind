@@ -311,8 +311,8 @@ local get_needs_technology = function(name)
   return needs_technology[name]
 end
 
-local needs_creep = shared.needs_creep
-local creep_name = shared.creep
+local needs_blight = shared.needs_blight
+local blight_name = shared.blight
 
 local check_ghost = function(ghost_data)
   local entity = ghost_data.entity
@@ -459,12 +459,12 @@ local spawner_ghost_built = function(entity, player_index)
     end
   end
 
-  if util.needs_creep(ghost_name) and entity.surface.get_tile(entity.position).name ~= creep_name then
+  if util.needs_blight(ghost_name) and entity.surface.get_tile(entity.position).name ~= blight_name then
     if player_index then
       local player = game.get_player(player_index)
       player.create_local_flying_text
       {
-        text={"must-be-placed-on-creep", get_prototype(ghost_name).localised_name},
+        text={"must-be-placed-on-blight", get_prototype(ghost_name).localised_name},
         position=entity.position,
         color=nil,
         time_to_live=nil,

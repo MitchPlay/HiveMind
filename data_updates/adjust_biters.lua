@@ -242,7 +242,7 @@ local make_worm = function(turret, pollution_cost)
   turret.create_ghost_on_death = false
   turret.friendly_map_color = {b = 1, g = 0.5}
   turret.localised_description = {"requires-pollution", pollution_cost * shared.pollution_cost_multiplier}
-  turret.collision_mask = util.buildable_on_creep_collision_mask()
+  turret.collision_mask = util.buildable_on_blight_collision_mask()
   if turret.attack_parameters.ammo_type.category == "biological" then
     turret.attack_parameters.ammo_type.category = worm_ammo_category
   end
