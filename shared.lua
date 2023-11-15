@@ -39,7 +39,6 @@ data.pollution_tree = "pollution-tree"
 data.sticker_proxy = "sticker-proxy"
 
 data.blight_radius = {
-  default = 9,
   worm_default = 3,
   deployer_default = 9,
   [data.blight_spreader] = 14,
