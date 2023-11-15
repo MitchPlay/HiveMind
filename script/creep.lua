@@ -247,22 +247,21 @@ unspread_blight = function(unit_number, landmine_data)
         end
       end
       if claimed_tile == false then
-        creep_to_remove = tile
+        blight_to_remove = tile
         break
       end
     end
   end
 
-  if not creep_to_remove then
+  if not blight_to_remove then
     landmine_data.tiles = nil
-    return unspread_creep(unit_number, landmine_data)
+    return unspread_blight(unit_number, landmine_data)
   end
 
-  register_to_set_tiles(surface, {position = creep_to_remove.position, name = creep_to_remove.hidden_tile or "out-of-map"})
+  register_to_set_tiles(surface, {position = blight_to_remove.position, name = blight_to_remove.hidden_tile or "out-of-map"})
 
 end
 
-local check_creep_unspread = function(event)
 local check_blight_unspread = function(event)
 
   local mod = event.tick % blight_unspread_update_rate
