@@ -38,15 +38,21 @@ local on_marked_for_upgrade = function(event)
       end
     end
 
-    local difference = required_pollution - stored_pollution
+    local difference = required_pollution * shared.pollution_cost_multiplier - stored_pollution * shared.pollution_cost_multiplier
     if difference <= 0 then
-      entity.surface.create_entity{
-        name = target.name, 
+      local ent = entity.surface.create_entity{
+        name = "entity-ghost", 
+        inner_name = target.name,
         position = entity.position, 
         direction = event.direction or entity.direction,
         force = entity.force
       }
-      entity.destroy()
+
+      if not (ent == nil) then
+        register_ghost_built(ent, event.player_index, -999999999)
+
+        entity.destroy()
+      end
     else
       local ent = entity.surface.create_entity{
         name = "entity-ghost", 
@@ -57,7 +63,7 @@ local on_marked_for_upgrade = function(event)
       }
 
       if not (ent == nil) then
-        register_ghost_built(ent, event.player_index, stored_pollution)
+        register_ghost_built(ent, event.player_index, stored_pollution * shared.pollution_cost_multiplier)
 
         entity.destroy()
       end
