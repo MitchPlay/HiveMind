@@ -34,7 +34,7 @@ drill.selection_box = util.area({0,0}, 1.5)
 drill.mining_speed = 0
 drill.energy_source = {type = "void", emissions_per_minute = 45}
 drill.resource_searching_radius = 0.5
-drill.collision_mask = util.buildable_on_creep_collision_mask()
+drill.collision_mask = util.buildable_on_blight_collision_mask()
 drill.resource_categories = {"basic-fluid"}
 drill.vector_to_place_result = {0, 0}
 drill.output_fluid_box = nil

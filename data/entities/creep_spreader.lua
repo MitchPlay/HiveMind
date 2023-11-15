@@ -1,4 +1,4 @@
-local name = names.creep_spreader
+local name = names.blight_spreader
 local util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
 local graphics = util.copy(data.raw["unit-spawner"]["biter-spawner"])
 

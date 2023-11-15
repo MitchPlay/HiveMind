@@ -35,7 +35,7 @@ drill.selection_box = util.area({0,0}, 1.75)
 drill.mining_speed = 0
 drill.energy_source = {type = "void", emissions_per_minute = 36}
 drill.resource_searching_radius = 0.5
-drill.collision_mask = util.buildable_on_creep_collision_mask()
+drill.collision_mask = util.buildable_on_blight_collision_mask()
 drill.resource = {"coal", "copper-ore", "iron-ore"}
 drill.vector_to_place_result = {0, 0}
 drill.base_picture = spawner_graphics.animations[4]

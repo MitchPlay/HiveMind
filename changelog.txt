@@ -99,9 +99,9 @@ Major Features:
 		- Lots of Mod Compatitbility Fixes
 
 	~ Building Changes ~
-		- Creep wall Hp Increased: 45 --> 115
-		- Creep Spreader Hp Increased: 75 --> 315
-		- Armored Creep Tumor Hp Increased: 116 --> 215
+		- blight wall Hp Increased: 45 --> 115
+		- blight Spreader Hp Increased: 75 --> 315
+		- Armored blight Tumor Hp Increased: 116 --> 215
 		- All Worms have been Buffed Slightly to Fit The New Tech Tree
 
 	~ Mod Dependency Changes ~
@@ -121,8 +121,8 @@ Date: 2022-05-30
 	-- Advanced Pollution Mining Drill: Old Cost 1120 --> 1425 New Cost
 	-- Pollution oil drill: Old Cost 875 --> 1150 New Cost
 	-- Advanced Pollution oil drill: Old Cost 2625 --> 3150 New Cost 
-	-- Creep Wall: Old Cost 75 -- Old Hp:25 --> New Cost:115 -- New Hp:45
-	-- Armoured Creep Tumor: Old Hp:125 --> New Hp:165
+	-- blight Wall: Old Cost 75 -- Old Hp:25 --> New Cost:115 -- New Hp:45
+	-- Armoured blight Tumor: Old Hp:125 --> New Hp:165
 
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.5

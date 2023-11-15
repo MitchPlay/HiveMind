@@ -235,11 +235,11 @@ util.projectile_collision_mask = function()
   return {"layer-15", "player-layer", "train-layer"}
 end
 
-util.creep_collision_mask = function()
+util.blight_collision_mask = function()
   return {"item-layer", "floor-layer"}
 end
 
-util.buildable_on_creep_collision_mask = function()
+util.buildable_on_blight_collision_mask = function()
   return {"ground-tile", "water-tile", "player-layer"}
 end
 
@@ -401,8 +401,8 @@ util.required_pollution = function(name, entity)
   return util.evo_factor_to_pollution_cost(evolution_factor)
 end
 
-util.needs_creep = function(name)
-  if shared.needs_creep[name] then return true end
+util.needs_blight = function(name)
+  if shared.needs_blight[name] then return true end
   if name:find("worm%-turret") then return true end
   return false
 end
@@ -568,9 +568,9 @@ util.get_propper_repeat_counts = function(num_list)
   return lcm
 end
 
-util.biggest_creep_radius = function ()
-  local biggest_radius = shared.creep_radius.default
-  for _, distance in pairs(shared.creep_radius) do
+util.biggest_blight_radius = function ()
+  local biggest_radius = shared.blight_radius.default
+  for _, distance in pairs(shared.blight_radius) do
     if biggest_radius < distance then
       biggest_radius = distance
     end

@@ -1,4 +1,4 @@
-local name = names.creep_chest
+local name = names.blight_chest
 
 local drill = util.copy(data.raw["container"]["wooden-chest"])
 local spawner_graphics = util.copy(data.raw["unit-spawner"]["biter-spawner"])
@@ -32,7 +32,7 @@ drill.collision_mask = {"water-tile", "player-layer", "train-layer"}
 collision_box = {{-0.48, -0.48}, {0.48, 0.48}}
 drill.selection_box = {{-0.5, -0.5}, {0.5, 0.5}}
 drill.energy_source = {type = "void", emissions_per_minute = 1}
-drill.collision_mask = util.buildable_on_creep_collision_mask()
+drill.collision_mask = util.buildable_on_blight_collision_mask()
 drill.base_picture = spawner_graphics.animations[4]
 drill.working_sound = nil
 drill.vehicle_impact_sound = spawner_graphics.vehicle_impact_sound

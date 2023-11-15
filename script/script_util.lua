@@ -147,13 +147,13 @@ util.get_hivemind_entity_list = function()
   return hivemind_entity_list
 end
 
-util.needs_creep = ft_util.needs_creep
+util.needs_blight = ft_util.needs_blight
 util.required_pollution = ft_util.required_pollution
 util.evo_factor_to_pollution_cost = ft_util.evo_factor_to_pollution_cost
 util.get_spawner_order = ft_util.get_spawner_order
 util.get_deployer_order = ft_util.get_deployer_order
 util.get_worm_order = ft_util.get_worm_order
 util.get_spawner_list = ft_util.get_spawner_list
-util.biggest_creep_radius = ft_util.biggest_creep_radius
+util.biggest_blight_radius = ft_util.biggest_blight_radius
 
 return util

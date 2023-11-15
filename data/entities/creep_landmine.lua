@@ -3,7 +3,7 @@ local util = require("__Hive_Mind_MitchPlay__/data/tf_util/tf_util")
 local landmine =
 {
   type = "land-mine",
-  name = names.creep_landmine,
+  name = names.blight_landmine,
   icon = "__base__/graphics/icons/land-mine.png",
   icon_size = 32,
   flags =
@@ -26,7 +26,7 @@ local landmine =
   --dying_explosion = "explosion-hit",
   picture_safe = util.empty_sprite(),
   picture_set = util.empty_sprite(),
-  trigger_radius = util.biggest_creep_radius() + 1,
+  trigger_radius = util.biggest_blight_radius() + 1,
   force_die_on_attack = false,
   ammo_category = "landmine",
   order = "noob",
@@ -44,7 +44,7 @@ local landmine =
           action =
           {
             type = "area",
-            radius = util.biggest_creep_radius() + 1,
+            radius = util.biggest_blight_radius() + 1,
             force = "enemy",
             collision_mask = {"player-layer"},
             action_delivery =
@@ -54,7 +54,7 @@ local landmine =
               {
                 {
                   type = "create-sticker",
-                  sticker = names.creep_sticker,
+                  sticker = names.blight_sticker,
                   trigger_created_entity = true
                 }
               }
@@ -69,7 +69,7 @@ local landmine =
 local sticker =
 {
   type = "sticker",
-  name = names.creep_sticker,
+  name = names.blight_sticker,
   --icon = "__base__/graphics/icons/slowdown-sticker.png",
   flags = {},
   animation = util.empty_sprite(),
