@@ -13,27 +13,18 @@ local names = require("shared")
 local blight_spread_map
 local get_blight_spread_map = function()
   if blight_spread_map then return blight_spread_map end
-  blight_spread_map = names.blight_radius
-  {
-    --["biter-deployer"] = true, -- not needed because they are generated later
-    --["spitter-deployer"] = true,
-    --["biter-spawner"] = true,
-    --["spitter-spawner"] = true,
-    ["blight-spreader"] = 15, -- bools replaced with ints
-    ["advanced-blight-spreader"] = 30,
-    ["blight-tumor"] = 10,
-    ["armored-blight-tumor"] = 15,
-    ["blight-wall"] = 2,
-    ["blight-gate"] = 2
-  }
+
   for index, name in pairs(util.get_spawner_order()) do -- spawners/deployers added to map from here
-    blight_spread_map[name] = 10
-    blight_spread_map[util.deployer_name(name)] = 10
+    blight_spread_map[name] = names.blight_radius.deployer_default
+    blight_spread_map[util.deployer_name(name)] = names.blight_radius.deployer_default
   end
 
   for index, name in pairs(util.get_worm_order()) do -- worms added to map from here
-    blight_spread_map[name] = 4
+    blight_spread_map[name] = names.blight_radius.worm_default
   end
+
+  blight_spread_map = names.blight_radius
+  
   return blight_spread_map
 end
 
