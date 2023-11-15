@@ -55,6 +55,10 @@ local get_prototype = function(name)
   return prototype
 end
 
+function request_get_prototype(name)  -- call get_prototype from other scripts
+  return get_prototype(name)
+end
+
 local required_pollution = util.required_pollution
 local pollution_cost_multiplier = shared.pollution_cost_multiplier
 
@@ -311,6 +315,10 @@ local get_needs_technology = function(name)
   return needs_technology[name]
 end
 
+function request_needs_technology(name)  -- call get_needs_technology from other scripts
+  return get_needs_technology(name)
+end
+
 local needs_blight = shared.needs_blight
 local blight_name = shared.blight
 
@@ -438,10 +446,6 @@ end
 
 local ghost_update_interval = 60
 
-function register_ghost_built(entity, player_index, override_pollution) -- call spawner_ghost_built from other scripts
-  spawner_ghost_built(entity, player_index, override_pollution)
-end
-
 spawner_ghost_built = function(entity, player_index, override_pollution)
   local ghost_name = entity.ghost_name
 
@@ -485,6 +489,10 @@ spawner_ghost_built = function(entity, player_index, override_pollution)
   data.ghost_tick_check[update_tick] = data.ghost_tick_check[update_tick] or {}
   data.ghost_tick_check[update_tick][entity.unit_number] = ghost_data
   check_ghost(ghost_data)
+end
+
+function register_ghost_built(entity, player_index, override_pollution) -- call spawner_ghost_built from other scripts
+  spawner_ghost_built(entity, player_index, override_pollution)
 end
 
 local on_built_entity = function(event)

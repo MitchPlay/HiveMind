@@ -9,28 +9,41 @@ local on_marked_for_upgrade = function(event)
 
   local can_upgrade = false
 
-  if get_needs_technology(ghost_name) then
-    if entity.force.technologies[get_needs_technology(ghost_name)].researched then
-      game.print("has tech")
+  if request_needs_technology(target.name) then
+    if entity.force.technologies[request_needs_technology(target.name)].researched then
       can_upgrade = true
     end
   else
-    game.print("no tech required")
     can_upgrade = true
   end
 
   if can_upgrade then
     local stored_pollution = shared.required_pollution[entity.name]
+    if stored_pollution == nil then
+      if(entity.name:find("biter")) then
+        stored_pollution = shared.required_pollution["biter-deployer"]
+      end
+      if(entity.name:find("spitter")) then
+        stored_pollution = shared.required_pollution["spitter-deployer"]
+      end
+    end
   
     local required_pollution = shared.required_pollution[target.name]
+    if required_pollution == nil then
+      if(target.name:find("biter")) then
+        required_pollution = shared.required_pollution["biter-deployer"]
+      end
+      if(target.name:find("spitter")) then
+        required_pollution = shared.required_pollution["spitter-deployer"]
+      end
+    end
 
     local difference = required_pollution - stored_pollution
-
     if difference <= 0 then
       entity.surface.create_entity{
         name = target.name, 
         position = entity.position, 
-        direction = event.direction,
+        direction = event.direction or entity.direction,
         force = entity.force
       }
       entity.destroy()
@@ -39,14 +52,26 @@ local on_marked_for_upgrade = function(event)
         name = "entity-ghost", 
         inner_name = target.name,
         position = entity.position, 
-        direction = event.direction,
+        direction = event.direction or entity.direction,
         force = entity.force
       }
 
-      register_ghost_built(ent, event.player_index, stored_pollution)
+      if not (ent == nil) then
+        register_ghost_built(ent, event.player_index, stored_pollution)
 
-      entity.destroy()
+        entity.destroy()
+      end
     end
+  else
+    local player = game.get_player(event.player_index)
+    player.create_local_flying_text
+    {
+      text={"entity-not-unlocked", request_get_prototype(target.name).localised_name},
+      position=entity.position,
+      color=nil,
+      time_to_live=nil,
+      speed=nil
+    }
   end
 end
 
