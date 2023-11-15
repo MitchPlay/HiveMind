@@ -139,7 +139,7 @@ data.evolution_factor_to_pollution_cost = --pollution_cost = base + round(multip
 data.summon_starter_data = {
   [data.players.small_biter_player] = {
     ["units"] = {
-      ["small-biter"] = 20,
+      ["small-biter"] = 30,
       ["small-spitter"] = 10,
       --["small-builder"] = 10
     },

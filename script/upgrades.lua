@@ -21,7 +21,7 @@ local on_marked_for_upgrade = function(event)
     local stored_pollution = shared.required_pollution[entity.name]
     if stored_pollution == nil then
       if(entity.name:find("biter")) then
-        stored_pollution = shared.required_pollution["biter-deployer"]
+        stored_pollution = shared.required_pollution["spitter-deployer"]
       end
       if(entity.name:find("spitter")) then
         stored_pollution = shared.required_pollution["spitter-deployer"]
@@ -31,7 +31,7 @@ local on_marked_for_upgrade = function(event)
     local required_pollution = shared.required_pollution[target.name]
     if required_pollution == nil then
       if(target.name:find("biter")) then
-        required_pollution = shared.required_pollution["biter-deployer"]
+        required_pollution = shared.required_pollution["spitter-deployer"]
       end
       if(target.name:find("spitter")) then
         required_pollution = shared.required_pollution["spitter-deployer"]
